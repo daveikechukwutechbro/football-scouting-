@@ -7,7 +7,8 @@ import { Loader2 } from "lucide-react";
 type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "danger";
 type ButtonSize = "sm" | "md" | "lg";
 
-interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"> {
+interface ButtonProps
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   children: ReactNode;
@@ -16,34 +17,24 @@ interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "typ
   type?: "button" | "submit" | "reset";
 }
 
-const variantStyles: Record<ButtonVariant, string> = {
-  primary: "text-white shadow-md",
-  secondary: "text-white shadow-md",
-  outline: "border-2",
-  ghost: "",
-  danger: "text-white shadow-md",
+const variantClasses: Record<ButtonVariant, string> = {
+  primary:
+    "bg-primary hover:bg-primary-hover text-white shadow-md",
+  secondary:
+    "bg-accent hover:bg-accent/90 text-white shadow-md",
+  outline:
+    "border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-white",
+  ghost:
+    "text-foreground dark:text-foreground bg-transparent hover:bg-surface-alt dark:hover:bg-surface-alt",
+  danger:
+    "bg-red-600 hover:bg-red-700 text-white shadow-md",
 };
 
-const sizeStyles: Record<ButtonSize, string> = {
+const sizeClasses: Record<ButtonSize, string> = {
   sm: "px-3 py-1.5 text-sm gap-1.5",
   md: "px-5 py-2.5 text-sm gap-2",
   lg: "px-7 py-3 text-base gap-2.5",
 };
-
-function getVariantStyle(variant: ButtonVariant): React.CSSProperties {
-  switch (variant) {
-    case "primary":
-      return { backgroundColor: "var(--primary)", color: "white" };
-    case "secondary":
-      return { backgroundColor: "var(--accent)", color: "white" };
-    case "outline":
-      return { border: "2px solid var(--primary)", color: "var(--primary)", backgroundColor: "transparent" };
-    case "ghost":
-      return { color: "var(--fg-text)", backgroundColor: "transparent" };
-    case "danger":
-      return { backgroundColor: "var(--danger)", color: "white" };
-  }
-}
 
 export default function Button({
   variant = "primary",
@@ -57,12 +48,18 @@ export default function Button({
   href,
   ...props
 }: ButtonProps) {
-  const baseStyles = "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 ease-in-out select-none cursor-pointer";
-  const disabledStyles = disabled || loading ? "opacity-50 cursor-not-allowed pointer-events-none" : "";
-  const combinedClassName = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${disabledStyles} ${className}`.trim();
+  const baseClasses =
+    "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 ease-in-out select-none cursor-pointer";
+  const disabledClasses =
+    disabled || loading ? "opacity-50 cursor-not-allowed pointer-events-none" : "";
+  const combinedClassName = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabledClasses} ${className}`.trim();
 
   if (href && !disabled && !loading) {
-    return <Link href={href} className={combinedClassName} style={getVariantStyle(variant)}>{children}</Link>;
+    return (
+      <Link href={href} className={combinedClassName}>
+        {children}
+      </Link>
+    );
   }
 
   return (
@@ -70,7 +67,6 @@ export default function Button({
       type={type}
       disabled={disabled || loading}
       className={combinedClassName}
-      style={getVariantStyle(variant)}
       onClick={onClick}
       {...props}
     >

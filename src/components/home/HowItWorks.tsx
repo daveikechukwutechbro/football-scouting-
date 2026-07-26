@@ -11,11 +11,11 @@ const STEPS = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-20 lg:py-28" style={{ backgroundColor: "var(--bg-muted)" }}>
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+    <section id="how-it-works" className="py-20 lg:py-28 bg-surface-alt dark:bg-surface-alt">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-14">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.1em] mb-3 block" style={{ color: "var(--primary)" }}>The Process</span>
-          <h2 className="text-[28px] sm:text-[32px] font-bold tracking-[-0.02em]" style={{ color: "var(--fg-heading)" }}>
+          <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-primary mb-3 block">The Process</span>
+          <h2 className="text-[28px] sm:text-[32px] font-bold tracking-[-0.02em] text-foreground dark:text-foreground">
             From registration to opportunity
           </h2>
         </div>
@@ -24,15 +24,14 @@ export default function HowItWorks() {
           {STEPS.map((step) => (
             <div
               key={step.num}
-              className="relative group p-6 rounded-xl border transition-all duration-300"
-              style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border)" }}
+              className="relative group p-6 rounded-xl border border-border dark:border-border bg-surface dark:bg-surface transition-all duration-300 hover:shadow-md"
             >
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-[28px] font-bold tabular-nums" style={{ color: "var(--border)" }}>{step.num}</span>
-                <step.icon className="h-5 w-5" style={{ color: "var(--primary)" }} strokeWidth={1.5} />
+                <span className="text-[28px] font-bold tabular-nums text-border dark:text-border">{step.num}</span>
+                <step.icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
               </div>
-              <h3 className="text-[14px] font-semibold mb-1.5" style={{ color: "var(--fg-heading)" }}>{step.title}</h3>
-              <p className="text-[13px] leading-[1.6]" style={{ color: "var(--fg-muted)" }}>{step.desc}</p>
+              <h3 className="text-[14px] font-semibold mb-1.5 text-foreground dark:text-foreground">{step.title}</h3>
+              <p className="text-[13px] leading-[1.6] text-muted">{step.desc}</p>
             </div>
           ))}
         </div>

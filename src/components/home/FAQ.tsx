@@ -8,11 +8,11 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="py-20 lg:py-28" style={{ borderTop: "1px solid var(--border)" }}>
-      <div className="max-w-[720px] mx-auto px-6 lg:px-8">
+    <section id="faq" className="py-20 lg:py-28 border-t border-border dark:border-border bg-background dark:bg-background">
+      <div className="max-w-3xl mx-auto px-6 lg:px-8">
         <div className="mb-12">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.1em] mb-3 block" style={{ color: "var(--primary)" }}>FAQ</span>
-          <h2 className="text-[28px] sm:text-[32px] font-bold tracking-[-0.02em]" style={{ color: "var(--fg-heading)" }}>
+          <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-primary mb-3 block">FAQ</span>
+          <h2 className="text-[28px] sm:text-[32px] font-bold tracking-[-0.02em] text-foreground dark:text-foreground">
             Common questions
           </h2>
         </div>
@@ -23,29 +23,29 @@ export default function FAQ() {
             return (
               <div
                 key={i}
-                className="rounded-xl border transition-all duration-300"
-                style={{
-                  backgroundColor: isOpen ? "var(--bg-card)" : "var(--bg-card)",
-                  borderColor: isOpen ? "var(--primary)" : "var(--border)",
-                }}
+                className={`rounded-xl border transition-colors duration-300 ${
+                  isOpen
+                    ? "border-primary dark:border-primary bg-surface dark:bg-surface"
+                    : "border-border dark:border-border bg-surface dark:bg-surface"
+                }`}
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : i)}
                   className="flex items-center justify-between w-full px-5 py-4 text-left"
                   aria-expanded={isOpen}
                 >
-                  <span className="text-[14px] font-medium pr-4" style={{ color: "var(--fg-heading)" }}>{item.question}</span>
+                  <span className="text-[14px] font-medium pr-4 text-foreground dark:text-foreground">{item.question}</span>
                   <ChevronDown
-                    className="h-4 w-4 shrink-0 transition-transform duration-300"
-                    style={{ color: isOpen ? "var(--primary)" : "var(--fg-muted)", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                    className={`h-4 w-4 shrink-0 transition-all duration-300 ${
+                      isOpen ? "rotate-180 text-primary" : "rotate-0 text-muted"
+                    }`}
                   />
                 </button>
-                <div
-                  className="overflow-hidden transition-all duration-300 ease-in-out"
-                  style={{ maxHeight: isOpen ? "400px" : "0px", opacity: isOpen ? 1 : 0 }}
-                >
-                  <div className="px-5 pb-4 text-[13px] leading-[1.7]" style={{ color: "var(--fg-muted)" }}>
-                    {item.answer}
+                <div className={`grid transition-all duration-300 ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+                  <div className="min-h-0 overflow-hidden">
+                    <div className="px-5 pb-4 text-[13px] leading-[1.7] text-muted">
+                      {item.answer}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -53,9 +53,9 @@ export default function FAQ() {
           })}
         </div>
 
-        <p className="mt-8 text-center text-[13px]" style={{ color: "var(--fg-muted)" }}>
+        <p className="mt-8 text-center text-[13px] text-muted">
           Still have questions?{" "}
-          <a href="/contact" className="font-medium transition-colors" style={{ color: "var(--primary)" }}>Get in touch</a>
+          <a href="/contact" className="font-medium text-primary transition-colors hover:opacity-80">Get in touch</a>
         </p>
       </div>
     </section>

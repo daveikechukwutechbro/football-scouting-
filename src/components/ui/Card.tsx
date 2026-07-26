@@ -9,7 +9,7 @@ interface CardProps {
   padding?: "none" | "sm" | "md" | "lg";
 }
 
-const paddingStyles: Record<string, string> = {
+const paddingMap: Record<string, string> = {
   none: "",
   sm: "p-4",
   md: "p-6",
@@ -24,20 +24,11 @@ export default function Card({
 }: CardProps) {
   return (
     <div
-      className={`
-        rounded-2xl border shadow-theme-sm
-        ${paddingStyles[padding]}
-        ${
-          hover
-            ? "transition-all duration-300 hover:-translate-y-0.5 hover:shadow-theme-md"
-            : "transition-all duration-200"
-        }
-        ${className}
-      `}
-      style={{
-        backgroundColor: "var(--bg-card)",
-        borderColor: "var(--border)",
-      }}
+      className={`rounded-2xl border border-border bg-surface dark:border-border dark:bg-surface shadow-sm ${paddingMap[padding]} ${
+        hover
+          ? "transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+          : "transition-all duration-200"
+      } ${className}`}
     >
       {children}
     </div>

@@ -4,12 +4,18 @@ import { Mail, Lock } from "lucide-react";
 import Input from "@/components/ui/Input";
 import type { StepProps } from "@/lib/constants";
 
-export default function Step1CreateAccount({ data, updateData, errors }: StepProps) {
+export default function Step1CreateAccount({
+  data,
+  updateData,
+  errors,
+}: StepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold" style={{ color: "var(--fg-heading)" }}>Create Your Account</h2>
-        <p className="mt-1 text-sm" style={{ color: "var(--fg-muted)" }}>
+        <h2 className="text-2xl font-bold text-foreground dark:text-foreground">
+          Create Your Account
+        </h2>
+        <p className="mt-1 text-sm text-muted">
           Set up your login credentials to get started.
         </p>
       </div>

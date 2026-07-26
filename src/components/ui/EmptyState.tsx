@@ -11,15 +11,31 @@ interface EmptyStateProps {
   onAction?: () => void;
 }
 
-export default function EmptyState({ icon: Icon, title, description, action, onAction }: EmptyStateProps) {
+export default function EmptyState({
+  icon: Icon,
+  title,
+  description,
+  action,
+  onAction,
+}: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl" style={{ backgroundColor: "var(--bg-input)" }}>
-        <Icon className="h-8 w-8" style={{ color: "var(--fg-muted)" }} />
+    <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-alt dark:bg-surface-alt">
+        <Icon className="h-8 w-8 text-muted" />
       </div>
-      <h3 className="text-lg font-semibold mt-4 mb-1" style={{ color: "var(--fg-heading)" }}>{title}</h3>
-      {description && <p className="text-sm max-w-sm mb-6" style={{ color: "var(--fg-muted)" }}>{description}</p>}
-      {action && onAction && <Button variant="primary" size="md" onClick={onAction}>{action}</Button>}
+      <h3 className="mt-4 mb-1 text-lg font-semibold text-foreground dark:text-foreground">
+        {title}
+      </h3>
+      {description && (
+        <p className="mb-6 max-w-sm text-sm text-muted">
+          {description}
+        </p>
+      )}
+      {action && onAction && (
+        <Button variant="primary" size="md" onClick={onAction}>
+          {action}
+        </Button>
+      )}
     </div>
   );
 }

@@ -18,10 +18,11 @@ export default function Tooltip({ content, children }: TooltipProps) {
     >
       {children}
       <div
-        className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs shadow-lg pointer-events-none z-50 transition-all duration-200 ease-in-out ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"
+        className={`pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg border border-border bg-surface px-3 py-1.5 text-xs shadow-lg transition-all duration-200 ease-in-out dark:border-border dark:bg-surface ${
+          isVisible
+            ? "translate-y-0 opacity-100"
+            : "translate-y-1 opacity-0"
         }`}
-        style={{ backgroundColor: "var(--bg-card)", color: "var(--fg)", border: "1px solid var(--border)" }}
         role="tooltip"
       >
         {content}
