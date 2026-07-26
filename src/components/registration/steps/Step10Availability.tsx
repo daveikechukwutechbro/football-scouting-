@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChangeEvent } from "react";
-import { Plane, MapPin, Calendar, MessageCircle } from "lucide-react";
+import { MapPin, Calendar } from "lucide-react";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Card from "@/components/ui/Card";
@@ -20,155 +20,68 @@ interface ToggleGroupProps {
 function ToggleGroup({ label, value, onChange, error, required, id }: ToggleGroupProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-medium text-gray-300">
-        {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+      <label className="text-sm font-medium" style={{ color: "var(--fg-text)" }}>
+        {label}{required && <span className="ml-0.5" style={{ color: "var(--danger)" }}>*</span>}
       </label>
       <div className="flex gap-2">
         <button
           type="button"
           id={id ? `${id}-yes` : undefined}
           onClick={() => onChange(true)}
-          className={`flex-1 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
-            value === true
-              ? "border-[#0D7B3E] bg-[#0D7B3E] text-white shadow-lg shadow-[#0D7B3E]/20"
-              : "border-gray-700 bg-[#232838] text-gray-400 hover:border-gray-600 hover:text-gray-300"
-          }`}
-        >
-          Yes
-        </button>
+          className="flex-1 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-200"
+          style={{
+            borderColor: value === true ? "var(--primary)" : "var(--border)",
+            backgroundColor: value === true ? "var(--primary)" : "var(--bg-input)",
+            color: value === true ? "white" : "var(--fg-muted)",
+          }}
+        >Yes</button>
         <button
           type="button"
           id={id ? `${id}-no` : undefined}
           onClick={() => onChange(false)}
-          className={`flex-1 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
-            value === false
-              ? "border-gray-500 bg-gray-600 text-white"
-              : "border-gray-700 bg-[#232838] text-gray-400 hover:border-gray-600 hover:text-gray-300"
-          }`}
-        >
-          No
-        </button>
+          className="flex-1 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-200"
+          style={{
+            borderColor: value === false ? "var(--border-strong)" : "var(--border)",
+            backgroundColor: value === false ? "var(--bg-elevated)" : "var(--bg-input)",
+            color: value === false ? "var(--fg)" : "var(--fg-muted)",
+          }}
+        >No</button>
       </div>
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-xs" style={{ color: "var(--danger)" }}>{error}</p>}
     </div>
   );
 }
 
-export default function Step10Availability({
-  data,
-  updateData,
-  errors,
-}: StepProps) {
-  const handleSelect = (field: string) => (e: ChangeEvent<HTMLSelectElement>) => {
-    updateData({ [field]: e.target.value });
-  };
-
-  const handleInput = (field: string) => (e: ChangeEvent<HTMLInputElement>) => {
-    updateData({ [field]: e.target.value });
-  };
+export default function Step10Availability({ data, updateData, errors }: StepProps) {
+  const handleSelect = (field: string) => (e: ChangeEvent<HTMLSelectElement>) => updateData({ [field]: e.target.value });
+  const handleInput = (field: string) => (e: ChangeEvent<HTMLInputElement>) => updateData({ [field]: e.target.value });
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold text-white">Availability & Preferences</h2>
-        <p className="mt-1 text-sm text-gray-400">
-          Let scouts know when and where you are available.
-        </p>
+        <h2 className="text-xl font-bold" style={{ color: "var(--fg-heading)" }}>Availability & Preferences</h2>
+        <p className="mt-1 text-sm" style={{ color: "var(--fg-muted)" }}>Let scouts know when and where you are available.</p>
       </div>
 
       <Card className="flex flex-col gap-5">
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-          Availability
-        </h3>
-
+        <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--fg-muted)" }}>Availability</h3>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <ToggleGroup
-            label="Available for trials?"
-            value={data.availableForTrials}
-            onChange={(val) => updateData({ availableForTrials: val })}
-            error={errors.availableForTrials}
-            required
-            id="trials"
-          />
-
-          <ToggleGroup
-            label="Available immediately?"
-            value={data.availableImmediately}
-            onChange={(val) => updateData({ availableImmediately: val })}
-            error={errors.availableImmediately}
-            required
-            id="immediate"
-          />
-
-          <ToggleGroup
-            label="Can travel?"
-            value={data.canTravel}
-            onChange={(val) => updateData({ canTravel: val })}
-            error={errors.canTravel}
-            required
-            id="travel"
-          />
-
-          <ToggleGroup
-            label="Can relocate?"
-            value={data.canRelocate}
-            onChange={(val) => updateData({ canRelocate: val })}
-            error={errors.canRelocate}
-            required
-            id="relocate"
-          />
+          <ToggleGroup label="Available for trials?" value={data.availableForTrials} onChange={(val) => updateData({ availableForTrials: val })} error={errors.availableForTrials} required id="trials" />
+          <ToggleGroup label="Available immediately?" value={data.availableImmediately} onChange={(val) => updateData({ availableImmediately: val })} error={errors.availableImmediately} required id="immediate" />
+          <ToggleGroup label="Can travel?" value={data.canTravel} onChange={(val) => updateData({ canTravel: val })} error={errors.canTravel} required id="travel" />
+          <ToggleGroup label="Can relocate?" value={data.canRelocate} onChange={(val) => updateData({ canRelocate: val })} error={errors.canRelocate} required id="relocate" />
         </div>
       </Card>
 
       <Card className="flex flex-col gap-4">
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-          Preferences
-        </h3>
-
+        <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--fg-muted)" }}>Preferences</h3>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Select
-            label="Preferred Country / Region"
-            options={COUNTRIES}
-            value={data.preferredCountry || ""}
-            onChange={handleSelect("preferredCountry")}
-            placeholder="Select a country"
-            id="preferred-country"
-          />
-
-          <Input
-            label="Preferred League"
-            type="text"
-            placeholder="e.g. Premier League, La Liga, MLS"
-            value={data.preferredLeague || ""}
-            onChange={handleInput("preferredLeague")}
-            icon={MapPin}
-            helperText="e.g. Premier League, La Liga, MLS"
-            id="preferred-league"
-          />
+          <Select label="Preferred Country / Region" options={COUNTRIES} value={data.preferredCountry || ""} onChange={handleSelect("preferredCountry")} placeholder="Select a country" id="preferred-country" />
+          <Input label="Preferred League" type="text" placeholder="e.g. Premier League, La Liga, MLS" value={data.preferredLeague || ""} onChange={handleInput("preferredLeague")} icon={MapPin} id="preferred-league" />
         </div>
-
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Input
-            label="Preferred Trial Dates"
-            type="date"
-            value={data.preferredTrialDates || ""}
-            onChange={handleInput("preferredTrialDates")}
-            icon={Calendar}
-            helperText="When are you available for trials?"
-            id="trial-dates"
-          />
-
-          <Select
-            label="Preferred Communication Method"
-            options={COMMUNICATION_METHODS}
-            value={data.preferredCommunication || ""}
-            onChange={handleSelect("preferredCommunication")}
-            placeholder="Select method"
-            error={errors.preferredCommunication}
-            required
-            id="communication-method"
-          />
+          <Input label="Preferred Trial Dates" type="date" value={data.preferredTrialDates || ""} onChange={handleInput("preferredTrialDates")} icon={Calendar} helperText="When are you available for trials?" id="trial-dates" />
+          <Select label="Preferred Communication Method" options={COMMUNICATION_METHODS} value={data.preferredCommunication || ""} onChange={handleSelect("preferredCommunication")} placeholder="Select method" error={errors.preferredCommunication} required id="communication-method" />
         </div>
       </Card>
     </div>

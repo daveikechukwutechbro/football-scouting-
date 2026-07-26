@@ -17,16 +17,11 @@ interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "typ
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary:
-    "bg-[#0D7B3E] text-white hover:bg-[#0a6632] active:bg-[#085528] shadow-md shadow-[#0D7B3E]/20",
-  secondary:
-    "bg-[#D4A843] text-[#0F1419] hover:bg-[#c49a3a] active:bg-[#b58d33] shadow-md shadow-[#D4A843]/20",
-  outline:
-    "border-2 border-[#0D7B3E] text-[#0D7B3E] hover:bg-[#0D7B3E]/10 active:bg-[#0D7B3E]/20",
-  ghost:
-    "text-gray-300 hover:bg-white/5 active:bg-white/10",
-  danger:
-    "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-md shadow-red-600/20",
+  primary: "text-white shadow-md",
+  secondary: "text-white shadow-md",
+  outline: "border-2",
+  ghost: "",
+  danger: "text-white shadow-md",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -34,6 +29,21 @@ const sizeStyles: Record<ButtonSize, string> = {
   md: "px-5 py-2.5 text-sm gap-2",
   lg: "px-7 py-3 text-base gap-2.5",
 };
+
+function getVariantStyle(variant: ButtonVariant): React.CSSProperties {
+  switch (variant) {
+    case "primary":
+      return { backgroundColor: "var(--primary)", color: "white" };
+    case "secondary":
+      return { backgroundColor: "var(--accent)", color: "white" };
+    case "outline":
+      return { border: "2px solid var(--primary)", color: "var(--primary)", backgroundColor: "transparent" };
+    case "ghost":
+      return { color: "var(--fg-text)", backgroundColor: "transparent" };
+    case "danger":
+      return { backgroundColor: "var(--danger)", color: "white" };
+  }
+}
 
 export default function Button({
   variant = "primary",
@@ -47,20 +57,12 @@ export default function Button({
   href,
   ...props
 }: ButtonProps) {
-  const baseStyles =
-    "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 ease-in-out select-none";
-
-  const disabledStyles = disabled || loading ? "opacity-50 cursor-not-allowed pointer-events-none" : "cursor-pointer";
-
+  const baseStyles = "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 ease-in-out select-none cursor-pointer";
+  const disabledStyles = disabled || loading ? "opacity-50 cursor-not-allowed pointer-events-none" : "";
   const combinedClassName = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${disabledStyles} ${className}`.trim();
 
   if (href && !disabled && !loading) {
-    return (
-      <Link href={href} className={combinedClassName}>
-        {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-        {children}
-      </Link>
-    );
+    return <Link href={href} className={combinedClassName} style={getVariantStyle(variant)}>{children}</Link>;
   }
 
   return (
@@ -68,6 +70,7 @@ export default function Button({
       type={type}
       disabled={disabled || loading}
       className={combinedClassName}
+      style={getVariantStyle(variant)}
       onClick={onClick}
       {...props}
     >

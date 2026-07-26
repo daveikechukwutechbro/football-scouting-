@@ -20,18 +20,11 @@ export const metadata: Metadata = {
     template: "%s | ProScout Football",
   },
   description:
-    "Join ProScout Football — the premier platform for aspiring footballers to register, upload highlights, and get scouted by professional scouts worldwide. Free registration, real opportunities.",
+    "Join ProScout Football — the premier platform for aspiring footballers to register, upload highlights, and get scouted by professional scouts worldwide.",
   keywords: [
-    "football scouting",
-    "player registration",
-    "football trials",
-    "soccer scouting",
-    "football recruitment",
-    "get discovered",
-    "football talent",
-    "scout football players",
-    "football academy",
-    "footballer career",
+    "football scouting", "player registration", "football trials",
+    "soccer scouting", "football recruitment", "get discovered",
+    "football talent", "scout football players", "football academy",
   ],
   authors: [{ name: "ProScout Football" }],
   creator: "ProScout Football",
@@ -42,27 +35,16 @@ export const metadata: Metadata = {
     siteName: "ProScout Football",
     title: "ProScout Football | Get Discovered by Professional Scouts",
     description:
-      "Create your player profile, upload highlights, and get reviewed by professional scouts. Free registration for aspiring footballers worldwide.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "ProScout Football - Football Scouting Platform",
-      },
-    ],
+      "Create your player profile, upload highlights, and get reviewed by professional scouts.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "ProScout Football" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ProScout Football | Get Discovered",
-    description:
-      "Create your player profile, upload highlights, and get scouted by professional scouts.",
+    description: "Create your player profile, upload highlights, and get scouted.",
     images: ["/og-image.png"],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -73,12 +55,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <head>
-        <meta name="theme-color" content="#080c12" />
-      </head>
-      <body className="min-h-full flex flex-col bg-[#080c12] text-white">
+      <body className="min-h-full flex flex-col">
         <Providers>
           <LayoutWrapper>{children}</LayoutWrapper>
         </Providers>

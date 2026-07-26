@@ -35,12 +35,9 @@ export default function Select({
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
       {label && (
-        <label
-          htmlFor={selectId}
-          className="text-sm font-medium text-gray-300"
-        >
+        <label htmlFor={selectId} className="text-sm font-medium" style={{ color: "var(--fg-text)" }}>
           {label}
-          {required && <span className="text-red-500 ml-0.5">*</span>}
+          {required && <span className="ml-0.5" style={{ color: "var(--danger)" }}>*</span>}
         </label>
       )}
       <div className="relative">
@@ -50,40 +47,32 @@ export default function Select({
           onChange={onChange}
           required={required}
           disabled={disabled}
-          className={`
-            w-full appearance-none rounded-xl border bg-[#232838] px-4 py-2.5 pr-10
-            text-sm text-white outline-none transition-all duration-200
-            ${
-              error
-                ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30"
-                : "border-gray-700 focus:border-[#0D7B3E] focus:ring-2 focus:ring-[#0D7B3E]/30"
-            }
-            ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
-            ${!value ? "text-gray-500" : ""}
-          `}
+          className="w-full appearance-none rounded-xl border px-4 py-2.5 pr-10 text-sm outline-none transition-all duration-200"
+          style={{
+            backgroundColor: "var(--bg-input)",
+            borderColor: error ? "var(--danger)" : "var(--border)",
+            color: value ? "var(--fg)" : "var(--fg-muted)",
+            ...(disabled ? { opacity: 0.5, cursor: "not-allowed" } : { cursor: "pointer" }),
+          }}
+          onFocus={(e) => {
+            if (!error) e.currentTarget.style.borderColor = "var(--primary)";
+          }}
+          onBlur={(e) => {
+            if (!error) e.currentTarget.style.borderColor = "var(--border)";
+          }}
           {...props}
         >
-          {placeholder && (
-            <option value="" disabled>
-              {placeholder}
-            </option>
-          )}
+          {placeholder && <option value="" disabled>{placeholder}</option>}
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
+            <option key={option.value} value={option.value}>{option.label}</option>
           ))}
         </select>
-        <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+        <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" style={{ color: "var(--fg-muted)" }}>
           <ChevronDown className="h-4 w-4" />
         </div>
       </div>
-      {error && (
-        <p className="text-xs text-red-500">{error}</p>
-      )}
-      {helperText && !error && (
-        <p className="text-xs text-gray-500">{helperText}</p>
-      )}
+      {error && <p className="text-xs" style={{ color: "var(--danger)" }}>{error}</p>}
+      {helperText && !error && <p className="text-xs" style={{ color: "var(--fg-muted)" }}>{helperText}</p>}
     </div>
   );
 }

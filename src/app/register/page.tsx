@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Loader2, CheckCircle } from "lucide-react";
 import ProgressIndicator from "@/components/ui/ProgressIndicator";
 import Button from "@/components/ui/Button";
-import Card from "@/components/ui/Card";
 import Step1CreateAccount from "@/components/registration/steps/Step1CreateAccount";
 import Step2PersonalDetails from "@/components/registration/steps/Step2PersonalDetails";
 import Step3Guardian from "@/components/registration/steps/Step3Guardian";
@@ -23,58 +22,23 @@ import { STEP_NAMES } from "@/lib/constants";
 const STORAGE_KEY = "proscout-registration";
 
 const defaultFormData = {
-  email: "",
-  password: "",
-  confirmPassword: "",
-  firstName: "",
-  lastName: "",
-  dateOfBirth: "",
-  age: 0,
-  nationality: "",
-  country: "",
-  city: "",
-  phoneNumber: "",
-  guardianName: "",
-  guardianRelationship: "",
-  guardianEmail: "",
-  guardianPhone: "",
-  currentPosition: "",
-  secondaryPosition: "",
-  preferredFoot: "",
-  currentLevel: "",
-  contractStatus: "",
-  currentClub: "",
-  yearsExperience: "",
-  previousClubs: "",
-  height: "",
-  weight: "",
-  bodyType: "",
-  fitnessLevel: "",
-  injuries: "",
-  totalAppearances: "",
-  totalGoals: "",
-  totalAssists: "",
-  cleanSheets: "",
-  yellowCards: "",
-  redCards: "",
-  biography: "",
-  playingStyle: "",
-  strengths: "",
-  weaknesses: "",
-  favoritePosition: "",
-  favoritePlayer: "",
-  careerGoal: "",
-  motivation: "",
+  email: "", password: "", confirmPassword: "",
+  firstName: "", lastName: "", dateOfBirth: "", age: 0,
+  nationality: "", country: "", city: "", phoneNumber: "",
+  guardianName: "", guardianRelationship: "", guardianEmail: "", guardianPhone: "",
+  currentPosition: "", secondaryPosition: "", preferredFoot: "", currentLevel: "",
+  contractStatus: "", currentClub: "", yearsExperience: "", previousClubs: "",
+  height: "", weight: "", bodyType: "", fitnessLevel: "", injuries: "",
+  totalAppearances: "", totalGoals: "", totalAssists: "", cleanSheets: "", yellowCards: "", redCards: "",
+  biography: "", playingStyle: "", strengths: "", weaknesses: "",
+  favoritePosition: "", favoritePlayer: "", careerGoal: "", motivation: "",
   videos: [] as string[],
   documents: {} as Record<string, File | null>,
   availableForTrials: null as boolean | null,
   availableImmediately: null as boolean | null,
   canTravel: null as boolean | null,
   canRelocate: null as boolean | null,
-  preferredCountry: "",
-  preferredLeague: "",
-  preferredTrialDates: "",
-  preferredCommunication: "",
+  preferredCountry: "", preferredLeague: "", preferredTrialDates: "", preferredCommunication: "",
   socialLinks: {} as Record<string, string>,
 };
 
@@ -84,27 +48,18 @@ function loadFormData(): FormData {
   if (typeof window === "undefined") return defaultFormData;
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      return { ...defaultFormData, ...JSON.parse(saved) };
-    }
-  } catch {
-    // ignore
-  }
+    if (saved) return { ...defaultFormData, ...JSON.parse(saved) };
+  } catch { /* ignore */ }
   return defaultFormData;
 }
 
 function saveFormData(data: FormData) {
   if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch {
-    // ignore
-  }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch { /* ignore */ }
 }
 
 function validateStep(step: number, data: FormData, hasGuardianStep: boolean): Record<string, string> {
   const errors: Record<string, string> = {};
-
   switch (step) {
     case 1:
       if (!data.email.trim()) errors.email = "Email is required";
@@ -151,10 +106,6 @@ function validateStep(step: number, data: FormData, hasGuardianStep: boolean): R
       if (!data.playingStyle.trim()) errors.playingStyle = "Playing style description is required";
       if (!data.strengths.trim()) errors.strengths = "Please list your key strengths";
       break;
-    case 8:
-      break;
-    case 9:
-      break;
     case 10:
       if (data.availableForTrials === null) errors.availableForTrials = "Please select an option";
       if (data.availableImmediately === null) errors.availableImmediately = "Please select an option";
@@ -162,12 +113,7 @@ function validateStep(step: number, data: FormData, hasGuardianStep: boolean): R
       if (data.canRelocate === null) errors.canRelocate = "Please select an option";
       if (!data.preferredCommunication) errors.preferredCommunication = "Preferred communication method is required";
       break;
-    case 11:
-      break;
-    case 12:
-      break;
   }
-
   return errors;
 }
 
@@ -179,24 +125,14 @@ export default function RegisterPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
-  useEffect(() => {
-    setFormData(loadFormData());
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (hydrated) {
-      saveFormData(formData);
-    }
-  }, [formData, hydrated]);
+  useEffect(() => { setFormData(loadFormData()); setHydrated(true); }, []);
+  useEffect(() => { if (hydrated) saveFormData(formData); }, [formData, hydrated]);
 
   const hasGuardianStep = formData.age > 0 && formData.age < 18;
 
   const visibleSteps = useMemo(() => {
     const steps = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-    if (hasGuardianStep) {
-      steps.splice(2, 0, 3);
-    }
+    if (hasGuardianStep) steps.splice(2, 0, 3);
     return steps;
   }, [hasGuardianStep]);
 
@@ -208,9 +144,7 @@ export default function RegisterPage() {
   const completedSteps = useMemo(() => {
     const completed: number[] = [];
     const currentIdx = visibleSteps.indexOf(currentStep);
-    for (let i = 0; i < currentIdx; i++) {
-      completed.push(visibleSteps[i]);
-    }
+    for (let i = 0; i < currentIdx; i++) completed.push(visibleSteps[i]);
     return completed;
   }, [currentStep, visibleSteps]);
 
@@ -220,19 +154,14 @@ export default function RegisterPage() {
     setFormData((prev) => ({ ...prev, ...fields }));
     setErrors((prev) => {
       const next = { ...prev };
-      Object.keys(fields).forEach((key) => {
-        delete next[key];
-      });
+      Object.keys(fields).forEach((key) => { delete next[key]; });
       return next;
     });
   }, []);
 
   const goToNextStep = useCallback(() => {
     const stepErrors = validateStep(currentStep, formData, hasGuardianStep);
-    if (Object.keys(stepErrors).length > 0) {
-      setErrors(stepErrors);
-      return;
-    }
+    if (Object.keys(stepErrors).length > 0) { setErrors(stepErrors); return; }
     setErrors({});
     const currentIdx = visibleSteps.indexOf(currentStep);
     if (currentIdx < visibleSteps.length - 1) {
@@ -251,11 +180,6 @@ export default function RegisterPage() {
   }, [currentStep, visibleSteps]);
 
   const handleSubmit = useCallback(async () => {
-    const stepErrors = validateStep(12, formData, hasGuardianStep);
-    if (Object.keys(stepErrors).length > 0) {
-      setErrors(stepErrors);
-      return;
-    }
     setIsSubmitting(true);
     try {
       const res = await fetch("/api/register", {
@@ -263,48 +187,41 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
       const result = await res.json();
-
       if (!res.ok) {
         setErrors({ general: result.error || "Submission failed. Please try again." });
         setIsSubmitting(false);
         return;
       }
-
       setIsSubmitted(true);
       localStorage.removeItem(STORAGE_KEY);
-      setTimeout(() => {
-        window.location.href = "/confirmation";
-      }, 1500);
+      setTimeout(() => { window.location.href = "/confirmation"; }, 1500);
     } catch {
       setErrors({ general: "Network error. Please check your connection and try again." });
       setIsSubmitting(false);
     }
-  }, [formData, hasGuardianStep]);
+  }, [formData]);
 
   if (!hydrated) {
     return (
-      <div className="min-h-screen bg-[#0F1419] flex items-center justify-center">
-        <Loader2 className="h-8 w-8 text-[#0D7B3E] animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--bg)" }}>
+        <Loader2 className="h-8 w-8 animate-spin" style={{ color: "var(--primary)" }} />
       </div>
     );
   }
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-[#0F1419] flex items-center justify-center px-4">
-        <Card padding="lg" className="max-w-md w-full text-center">
+      <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: "var(--bg)" }}>
+        <div className="max-w-md w-full text-center p-8 rounded-2xl border" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border)" }}>
           <div className="flex justify-center mb-6">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#0D7B3E]/10">
-              <CheckCircle className="h-12 w-12 text-[#0D7B3E] animate-[zoom-in_0.3s_ease-out]" />
+            <div className="flex h-20 w-20 items-center justify-center rounded-full" style={{ backgroundColor: "var(--primary-light)" }}>
+              <CheckCircle className="h-12 w-12 animate-[zoom-in_0.3s_ease-out]" style={{ color: "var(--primary)" }} />
             </div>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Application Submitted!</h2>
-          <p className="text-sm text-gray-400">
-            Redirecting you to the confirmation page...
-          </p>
-        </Card>
+          <h2 className="text-2xl font-bold mb-2" style={{ color: "var(--fg-heading)" }}>Application Submitted!</h2>
+          <p className="text-sm" style={{ color: "var(--fg-muted)" }}>Redirecting you to the confirmation page...</p>
+        </div>
       </div>
     );
   }
@@ -331,16 +248,16 @@ export default function RegisterPage() {
   const isLastStep = currentStep === 12;
 
   return (
-    <div className="min-h-screen bg-[#0F1419]">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--bg)" }}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0D7B3E]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl" style={{ backgroundColor: "var(--primary)" }}>
               <span className="text-white font-bold text-sm">P</span>
             </div>
-            <span className="text-lg font-bold text-white">ProScout</span>
+            <span className="text-lg font-bold" style={{ color: "var(--fg-heading)" }}>ProScout</span>
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">Player Registration</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--fg-heading)" }}>Player Registration</h1>
         </div>
 
         <div className="mb-8">
@@ -351,93 +268,52 @@ export default function RegisterPage() {
           />
         </div>
 
-        <Card padding="lg" className="mb-24 sm:mb-8">
-          <div
-            key={currentStep}
-            className="animate-[fadeIn_0.2s_ease-in-out]"
-          >
-            <style>{`
-              @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(8px); }
-                to { opacity: 1; transform: translateY(0); }
-              }
-            `}</style>
+        {/* Step card */}
+        <div className="p-6 sm:p-8 rounded-2xl border mb-24 sm:mb-8" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border)" }}>
+          <div key={currentStep} className="animate-[fadeIn_0.2s_ease-in-out]">
             {stepContent()}
           </div>
-        </Card>
+        </div>
 
+        {/* Desktop nav */}
         <div className="hidden sm:block">
           <div className="flex items-center justify-between gap-4">
             <div>
               {currentStep !== 1 && (
-                <Button
-                  variant="ghost"
-                  onClick={goToPrevStep}
-                  size="lg"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  Back
+                <Button variant="ghost" onClick={goToPrevStep} size="lg">
+                  <ArrowLeft className="h-4 w-4" /> Back
                 </Button>
               )}
             </div>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm" style={{ color: "var(--fg-muted)" }}>
               Step {visibleSteps.indexOf(currentStep) + 1} of {visibleSteps.length}
             </div>
             <div>
               {isLastStep ? (
-                <Button
-                  variant="primary"
-                  onClick={handleSubmit}
-                  loading={isSubmitting}
-                  size="lg"
-                >
-                  Submit Application
-                </Button>
+                <Button variant="primary" onClick={handleSubmit} loading={isSubmitting} size="lg">Submit Application</Button>
               ) : (
-                <Button
-                  variant="primary"
-                  onClick={goToNextStep}
-                  size="lg"
-                >
-                  Next
-                  <ArrowRight className="h-4 w-4" />
+                <Button variant="primary" onClick={goToNextStep} size="lg">
+                  Next <ArrowRight className="h-4 w-4" />
                 </Button>
               )}
             </div>
           </div>
         </div>
 
-        <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-[#0F1419] border-t border-gray-800 px-4 py-3 z-50">
+        {/* Mobile nav */}
+        <div className="sm:hidden fixed bottom-0 left-0 right-0 px-4 py-3 z-50" style={{ backgroundColor: "var(--bg-card)", borderTop: "1px solid var(--border)" }}>
           <div className="flex items-center justify-between gap-3 max-w-3xl mx-auto">
-            <Button
-              variant="ghost"
-              onClick={goToPrevStep}
-              disabled={currentStep === 1}
-              size="md"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
+            <Button variant="ghost" onClick={goToPrevStep} disabled={currentStep === 1} size="md">
+              <ArrowLeft className="h-4 w-4" /> Back
             </Button>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs" style={{ color: "var(--fg-muted)" }}>
               {visibleSteps.indexOf(currentStep) + 1}/{visibleSteps.length}
             </span>
             {isLastStep ? (
-              <Button
-                variant="primary"
-                onClick={handleSubmit}
-                loading={isSubmitting}
-                size="md"
-              >
-                Submit
-              </Button>
+              <Button variant="primary" onClick={handleSubmit} loading={isSubmitting} size="md">Submit</Button>
             ) : (
-              <Button
-                variant="primary"
-                onClick={goToNextStep}
-                size="md"
-              >
-                Next
-                <ArrowRight className="h-4 w-4" />
+              <Button variant="primary" onClick={goToNextStep} size="md">
+                Next <ArrowRight className="h-4 w-4" />
               </Button>
             )}
           </div>

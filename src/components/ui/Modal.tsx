@@ -11,12 +11,7 @@ interface ModalProps {
 }
 
 export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
-  const handleEscape = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    },
-    [onClose]
-  );
+  const handleEscape = useCallback((e: KeyboardEvent) => { if (e.key === "Escape") onClose(); }, [onClose]);
 
   useEffect(() => {
     if (isOpen) {
@@ -34,31 +29,25 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-200 ${isOpen ? "opacity-100" : "opacity-0"}`}
+        className={`absolute inset-0 backdrop-blur-sm transition-opacity duration-200 ${isOpen ? "opacity-100" : "opacity-0"}`}
+        style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
         onClick={onClose}
       />
       <div
-        className={`
-          relative z-10 w-full max-w-lg rounded-2xl bg-[#1A1F2E]
-          shadow-2xl shadow-black/40 border border-gray-700/50
-          transition-all duration-200
-          ${isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"}
-        `}
+        className="relative z-10 w-full max-w-lg rounded-2xl shadow-2xl border transition-all duration-200"
+        style={{
+          backgroundColor: "var(--bg-card)",
+          borderColor: "var(--border)",
+          ...(isOpen ? { opacity: 1, transform: "scale(1)" } : { opacity: 0, transform: "scale(0.95)" }),
+        }}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700/50">
-          {title && (
-            <h2 className="text-lg font-semibold text-white">{title}</h2>
-          )}
-          <button
-            onClick={onClose}
-            className="ml-auto rounded-lg p-1.5 text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-          >
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
+          {title && <h2 className="text-lg font-semibold" style={{ color: "var(--fg-heading)" }}>{title}</h2>}
+          <button onClick={onClose} className="ml-auto rounded-lg p-1.5 transition-colors" style={{ color: "var(--fg-muted)" }}>
             <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="px-6 py-4">
-          {children}
-        </div>
+        <div className="px-6 py-4">{children}</div>
       </div>
     </div>
   );

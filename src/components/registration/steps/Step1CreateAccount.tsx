@@ -8,8 +8,8 @@ export default function Step1CreateAccount({ data, updateData, errors }: StepPro
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white">Create Your Account</h2>
-        <p className="mt-1 text-sm text-gray-400">
+        <h2 className="text-2xl font-bold" style={{ color: "var(--fg-heading)" }}>Create Your Account</h2>
+        <p className="mt-1 text-sm" style={{ color: "var(--fg-muted)" }}>
           Set up your login credentials to get started.
         </p>
       </div>
@@ -35,7 +35,7 @@ export default function Step1CreateAccount({ data, updateData, errors }: StepPro
         onChange={(e) => updateData({ password: e.target.value })}
         error={errors.password}
         required
-        helperText="Must be at least 8 characters with a number and special character"
+        helperText="Must be at least 8 characters"
         autoComplete="new-password"
       />
 

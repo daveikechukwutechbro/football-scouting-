@@ -29,23 +29,19 @@ export default function Input({
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
-
   const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, "-") : undefined);
 
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
       {label && (
-        <label
-          htmlFor={inputId}
-          className="text-sm font-medium text-gray-300"
-        >
+        <label htmlFor={inputId} className="text-sm font-medium" style={{ color: "var(--fg-text)" }}>
           {label}
-          {required && <span className="text-red-500 ml-0.5">*</span>}
+          {required && <span className="ml-0.5" style={{ color: "var(--danger)" }}>*</span>}
         </label>
       )}
       <div className="relative">
         {Icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--fg-muted)" }}>
             <Icon className="h-4 w-4" />
           </div>
         )}
@@ -58,37 +54,37 @@ export default function Input({
           required={required}
           disabled={disabled}
           autoComplete={autoComplete}
-          className={`
-            w-full rounded-xl border bg-[#232838] px-4 py-2.5 text-sm text-white
-            placeholder-gray-500 outline-none transition-all duration-200
-            ${Icon ? "pl-10" : ""}
-            ${isPassword ? "pr-10" : ""}
-            ${
-              error
-                ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30"
-                : "border-gray-700 focus:border-[#0D7B3E] focus:ring-2 focus:ring-[#0D7B3E]/30"
-            }
-            ${disabled ? "opacity-50 cursor-not-allowed" : ""}
-          `}
+          className="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-all duration-200"
+          style={{
+            backgroundColor: "var(--bg-input)",
+            borderColor: error ? "var(--danger)" : "var(--border)",
+            color: "var(--fg)",
+            ...(Icon ? { paddingLeft: "2.5rem" } : {}),
+            ...(isPassword ? { paddingRight: "2.5rem" } : {}),
+            ...(disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}),
+          }}
+          onFocus={(e) => {
+            if (!error) e.currentTarget.style.borderColor = "var(--primary)";
+          }}
+          onBlur={(e) => {
+            if (!error) e.currentTarget.style.borderColor = "var(--border)";
+          }}
           {...props}
         />
         {isPassword && (
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
+            style={{ color: "var(--fg-muted)" }}
             tabIndex={-1}
           >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         )}
       </div>
-      {error && (
-        <p className="text-xs text-red-500">{error}</p>
-      )}
-      {helperText && !error && (
-        <p className="text-xs text-gray-500">{helperText}</p>
-      )}
+      {error && <p className="text-xs" style={{ color: "var(--danger)" }}>{error}</p>}
+      {helperText && !error && <p className="text-xs" style={{ color: "var(--fg-muted)" }}>{helperText}</p>}
     </div>
   );
 }

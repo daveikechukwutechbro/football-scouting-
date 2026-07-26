@@ -25,15 +25,19 @@ export default function Card({
   return (
     <div
       className={`
-        rounded-2xl bg-[#1A1F2E] shadow-lg shadow-black/20
+        rounded-2xl border shadow-theme-sm
         ${paddingStyles[padding]}
         ${
           hover
-            ? "transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#0D7B3E]/10 hover:border hover:border-[#0D7B3E]/30"
+            ? "transition-all duration-300 hover:-translate-y-0.5 hover:shadow-theme-md"
             : "transition-all duration-200"
         }
         ${className}
       `}
+      style={{
+        backgroundColor: "var(--bg-card)",
+        borderColor: "var(--border)",
+      }}
     >
       {children}
     </div>

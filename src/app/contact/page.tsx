@@ -11,12 +11,8 @@ export default function ContactPage() {
     e.preventDefault();
     setStatus("sending");
     try {
-      await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-    } catch {}
+      await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+    } catch { /* ignore */ }
     setStatus("sent");
     setTimeout(() => setStatus("idle"), 3000);
     setForm({ name: "", email: "", subject: "", message: "" });
@@ -24,19 +20,17 @@ export default function ContactPage() {
 
   return (
     <>
-      <section className="py-24 lg:py-36 bg-[#0A0A0F]">
+      <section className="py-24 lg:py-36" style={{ backgroundColor: "var(--bg)" }}>
         <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#10B981] mb-3 block">Contact</span>
-          <h1 className="text-[36px] sm:text-[48px] font-extrabold text-[#F1F5F9] tracking-[-0.03em] leading-[1.1] max-w-[520px]">
-            Get in touch
-          </h1>
-          <p className="mt-6 text-[16px] text-[#94A3B8] leading-[1.7] max-w-[480px]">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.1em] mb-3 block" style={{ color: "var(--primary)" }}>Contact</span>
+          <h1 className="text-[36px] sm:text-[48px] font-extrabold tracking-[-0.03em] leading-[1.1] max-w-[520px]" style={{ color: "var(--fg-heading)" }}>Get in touch</h1>
+          <p className="mt-6 text-[16px] leading-[1.7] max-w-[480px]" style={{ color: "var(--fg-muted)" }}>
             Questions about your application, partnerships, or anything else — we&apos;d love to hear from you.
           </p>
         </div>
       </section>
 
-      <section className="py-20 lg:py-28 border-t border-white/[0.04]">
+      <section className="py-20 lg:py-28" style={{ borderTop: "1px solid var(--border)" }}>
         <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-[1fr_480px] gap-16">
             <div className="space-y-6">
@@ -45,11 +39,11 @@ export default function ContactPage() {
                 { icon: User, label: "Location", value: "London, United Kingdom" },
                 { icon: MessageSquare, label: "Response Time", value: "Within 24 hours" },
               ].map((item) => (
-                <div key={item.label} className="flex items-start gap-4 p-4 rounded-xl bg-[#111118] border border-white/[0.04]">
-                  <item.icon className="h-5 w-5 text-[#10B981] mt-0.5" strokeWidth={1.5} />
+                <div key={item.label} className="flex items-start gap-4 p-4 rounded-xl border" style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border)" }}>
+                  <item.icon className="h-5 w-5 mt-0.5" style={{ color: "var(--primary)" }} strokeWidth={1.5} />
                   <div>
-                    <div className="text-[11px] text-[#475569] uppercase tracking-[0.06em] mb-0.5">{item.label}</div>
-                    <div className="text-[14px] text-[#F1F5F9] font-medium">{item.value}</div>
+                    <div className="text-[11px] uppercase tracking-[0.06em] mb-0.5" style={{ color: "var(--fg-muted)" }}>{item.label}</div>
+                    <div className="text-[14px] font-medium" style={{ color: "var(--fg-heading)" }}>{item.value}</div>
                   </div>
                 </div>
               ))}
@@ -57,51 +51,23 @@ export default function ContactPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  placeholder="Name"
-                  required
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="px-4 py-3 rounded-lg bg-[#111118] border border-white/[0.06] text-[14px] text-[#F1F5F9] placeholder-[#475569] focus:border-[#10B981]/[0.3] focus:outline-none transition-colors"
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  required
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="px-4 py-3 rounded-lg bg-[#111118] border border-white/[0.06] text-[14px] text-[#F1F5F9] placeholder-[#475569] focus:border-[#10B981]/[0.3] focus:outline-none transition-colors"
-                />
+                <input type="text" placeholder="Name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="px-4 py-3 rounded-lg border text-[14px] outline-none transition-colors"
+                  style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border)", color: "var(--fg)" }} />
+                <input type="email" placeholder="Email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  className="px-4 py-3 rounded-lg border text-[14px] outline-none transition-colors"
+                  style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border)", color: "var(--fg)" }} />
               </div>
-              <input
-                type="text"
-                placeholder="Subject"
-                required
-                value={form.subject}
-                onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-[#111118] border border-white/[0.06] text-[14px] text-[#F1F5F9] placeholder-[#475569] focus:border-[#10B981]/[0.3] focus:outline-none transition-colors"
-              />
-              <textarea
-                placeholder="Your message"
-                required
-                rows={6}
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-[#111118] border border-white/[0.06] text-[14px] text-[#F1F5F9] placeholder-[#475569] focus:border-[#10B981]/[0.3] focus:outline-none transition-colors resize-none"
-              />
-              <button
-                type="submit"
-                disabled={status === "sending"}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-[14px] font-semibold text-white bg-[#10B981] hover:bg-[#0EA573] transition-all duration-200 disabled:opacity-50 shadow-[0_0_24px_rgba(16,185,129,0.15)]"
-              >
-                {status === "sent" ? (
-                  <><CheckCircle className="h-4 w-4" /> Sent</>
-                ) : status === "sending" ? (
-                  "Sending..."
-                ) : (
-                  <><Send className="h-4 w-4" /> Send Message</>
-                )}
+              <input type="text" placeholder="Subject" required value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg border text-[14px] outline-none transition-colors"
+                style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border)", color: "var(--fg)" }} />
+              <textarea placeholder="Your message" required rows={6} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg border text-[14px] outline-none transition-colors resize-none"
+                style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border)", color: "var(--fg)" }} />
+              <button type="submit" disabled={status === "sending"}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-[14px] font-semibold text-white transition-all duration-200 disabled:opacity-50"
+                style={{ backgroundColor: "var(--primary)" }}>
+                {status === "sent" ? <><CheckCircle className="h-4 w-4" /> Sent</> : status === "sending" ? "Sending..." : <><Send className="h-4 w-4" /> Send Message</>}
               </button>
             </form>
           </div>

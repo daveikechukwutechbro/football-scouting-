@@ -33,12 +33,9 @@ export default function TextArea({
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
       {label && (
-        <label
-          htmlFor={textareaId}
-          className="text-sm font-medium text-gray-300"
-        >
+        <label htmlFor={textareaId} className="text-sm font-medium" style={{ color: "var(--fg-text)" }}>
           {label}
-          {required && <span className="text-red-500 ml-0.5">*</span>}
+          {required && <span className="ml-0.5" style={{ color: "var(--danger)" }}>*</span>}
         </label>
       )}
       <textarea
@@ -50,30 +47,28 @@ export default function TextArea({
         disabled={disabled}
         rows={rows}
         maxLength={maxLength}
-        className={`
-          w-full resize-y rounded-xl border bg-[#232838] px-4 py-2.5
-          text-sm text-white placeholder-gray-500 outline-none transition-all duration-200
-          ${
-            error
-              ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30"
-              : "border-gray-700 focus:border-[#0D7B3E] focus:ring-2 focus:ring-[#0D7B3E]/30"
-          }
-          ${disabled ? "opacity-50 cursor-not-allowed" : ""}
-          min-h-[80px]
-        `}
+        className="w-full resize-y rounded-xl border px-4 py-2.5 text-sm outline-none transition-all duration-200 min-h-[80px]"
+        style={{
+          backgroundColor: "var(--bg-input)",
+          borderColor: error ? "var(--danger)" : "var(--border)",
+          color: "var(--fg)",
+          ...(disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}),
+        }}
+        onFocus={(e) => {
+          if (!error) e.currentTarget.style.borderColor = "var(--primary)";
+        }}
+        onBlur={(e) => {
+          if (!error) e.currentTarget.style.borderColor = "var(--border)";
+        }}
         {...props}
       />
       <div className="flex items-center justify-between">
         <div>
-          {error && (
-            <p className="text-xs text-red-500">{error}</p>
-          )}
-          {helperText && !error && (
-            <p className="text-xs text-gray-500">{helperText}</p>
-          )}
+          {error && <p className="text-xs" style={{ color: "var(--danger)" }}>{error}</p>}
+          {helperText && !error && <p className="text-xs" style={{ color: "var(--fg-muted)" }}>{helperText}</p>}
         </div>
         {showCounterActual && (
-          <p className={`text-xs ${currentLength >= maxLength ? "text-red-500" : "text-gray-500"}`}>
+          <p className="text-xs" style={{ color: currentLength >= maxLength ? "var(--danger)" : "var(--fg-muted)" }}>
             {currentLength}/{maxLength}
           </p>
         )}

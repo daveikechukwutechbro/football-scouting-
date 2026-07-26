@@ -10,26 +10,30 @@ const FEATURES = [
 
 export default function TrustSection() {
   return (
-    <section className="py-20 lg:py-28 border-t border-white/[0.04]">
+    <section className="py-20 lg:py-28" style={{ borderTop: "1px solid var(--border)" }}>
       <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-12">
           <div>
-            <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#10B981] mb-3 block">Why ProScout</span>
-            <h2 className="text-[28px] sm:text-[32px] font-bold text-[#F1F5F9] tracking-[-0.02em] leading-[1.15]">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.1em] mb-3 block" style={{ color: "var(--primary)" }}>Why ProScout</span>
+            <h2 className="text-[28px] sm:text-[32px] font-bold tracking-[-0.02em] leading-[1.15]" style={{ color: "var(--fg-heading)" }}>
               Everything you need to get discovered
             </h2>
           </div>
-          <p className="text-[14px] text-[#636681] max-w-[360px] leading-relaxed">
+          <p className="text-[14px] max-w-[360px] leading-relaxed" style={{ color: "var(--fg-muted)" }}>
             Built for players who are serious about their football career.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {FEATURES.map((f) => (
-            <div key={f.title} className="group p-5 rounded-xl bg-[#111118] border border-white/[0.04] hover:border-[#10B981]/[0.12] transition-all duration-300">
-              <f.icon className="h-5 w-5 text-[#10B981] mb-3" strokeWidth={1.5} />
-              <h3 className="text-[13px] font-semibold text-[#F1F5F9] mb-1">{f.title}</h3>
-              <p className="text-[12px] text-[#475569] leading-[1.6]">{f.desc}</p>
+            <div
+              key={f.title}
+              className="group p-5 rounded-xl border transition-all duration-300"
+              style={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border)" }}
+            >
+              <f.icon className="h-5 w-5 mb-3" style={{ color: "var(--primary)" }} strokeWidth={1.5} />
+              <h3 className="text-[13px] font-semibold mb-1" style={{ color: "var(--fg-heading)" }}>{f.title}</h3>
+              <p className="text-[12px] leading-[1.6]" style={{ color: "var(--fg-muted)" }}>{f.desc}</p>
             </div>
           ))}
         </div>
