@@ -3,37 +3,31 @@ import { SAMPLE_TESTIMONIALS } from "@/lib/constants";
 
 export default function SuccessStories() {
   return (
-    <section className="relative py-24 lg:py-32">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400 mb-4 block">Success Stories</span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-            Players who made it through
+    <section className="py-20 lg:py-28 bg-[#0D0D14] border-t border-white/[0.04]">
+      <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+        <div className="mb-12">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#10B981] mb-3 block">Success Stories</span>
+          <h2 className="text-[28px] sm:text-[32px] font-bold text-[#F1F5F9] tracking-[-0.02em]">
+            Players who made it
           </h2>
-          <p className="mt-4 text-gray-400 leading-relaxed">
-            Real stories from real players who got discovered on ProScout.
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {SAMPLE_TESTIMONIALS.map((story) => (
-            <div
-              key={story.id}
-              className="group relative p-6 rounded-2xl bg-[#0c1017] border border-white/[0.04] hover:border-emerald-500/15 transition-all duration-500"
-            >
-              <Quote className="h-8 w-8 text-emerald-500/10 mb-4" />
-              <p className="text-sm text-gray-400 leading-relaxed mb-6 italic">
+            <div key={story.id} className="p-6 rounded-xl bg-[#111118] border border-white/[0.04] flex flex-col">
+              <Quote className="h-5 w-5 text-[#10B981]/20 mb-4" strokeWidth={1.5} />
+              <p className="text-[13px] text-[#94A3B8] leading-[1.7] italic flex-1">
                 &ldquo;{story.quote}&rdquo;
               </p>
-              <div className="flex items-center gap-3 pt-4 border-t border-white/[0.04]">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 text-sm font-bold text-emerald-400">
+              <div className="flex items-center gap-3 mt-6 pt-4 border-t border-white/[0.04]">
+                <div className="h-9 w-9 rounded-full bg-[#10B981]/[0.08] flex items-center justify-center text-[11px] font-bold text-[#10B981]">
                   {story.initials}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-white">{story.name}</div>
-                  <div className="text-xs text-gray-500">{story.position}</div>
+                  <div className="text-[13px] font-medium text-[#F1F5F9]">{story.name}</div>
+                  <div className="text-[11px] text-[#475569]">{story.position}</div>
                 </div>
-                <span className="text-[10px] font-semibold px-2 py-1 rounded-full bg-emerald-500/[0.08] text-emerald-400 border border-emerald-500/10">
+                <span className="text-[10px] font-medium px-2 py-1 rounded bg-[#10B981]/[0.06] text-[#10B981]">
                   {story.outcome}
                 </span>
               </div>

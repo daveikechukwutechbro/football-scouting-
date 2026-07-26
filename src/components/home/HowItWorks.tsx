@@ -1,88 +1,36 @@
 import { UserPlus, ClipboardCheck, Video, Send, Eye, PhoneCall } from "lucide-react";
 
 const STEPS = [
-  {
-    icon: UserPlus,
-    number: "01",
-    title: "Create Account",
-    description: "Sign up in under a minute with just your email. No fees, no commitments.",
-  },
-  {
-    icon: ClipboardCheck,
-    number: "02",
-    title: "Build Your Profile",
-    description: "Complete your football profile with stats, physical attributes, and playing style.",
-  },
-  {
-    icon: Video,
-    number: "03",
-    title: "Upload Highlights",
-    description: "Share match footage and training clips that showcase your best moments.",
-  },
-  {
-    icon: Send,
-    number: "04",
-    title: "Submit Application",
-    description: "Review everything and submit your profile to our global scout network.",
-  },
-  {
-    icon: Eye,
-    number: "05",
-    title: "Get Discovered",
-    description: "Professional scouts review your profile and shortlist standout talent.",
-  },
-  {
-    icon: PhoneCall,
-    number: "06",
-    title: "Receive Opportunities",
-    description: "Get contacted directly by scouts, clubs, and academies for trials and signings.",
-  },
+  { num: "01", icon: UserPlus, title: "Create Account", desc: "Sign up in under a minute. Free, no commitments." },
+  { num: "02", icon: ClipboardCheck, title: "Build Profile", desc: "Add your stats, physical attributes, and playing style." },
+  { num: "03", icon: Video, title: "Upload Highlights", desc: "Share match footage that showcases your best moments." },
+  { num: "04", icon: Send, title: "Submit Application", desc: "Review and submit your profile to our scout network." },
+  { num: "05", icon: Eye, title: "Get Reviewed", desc: "Professional scouts evaluate your profile and skills." },
+  { num: "06", icon: PhoneCall, title: "Get Contacted", desc: "Receive direct offers from scouts, clubs, and academies." },
 ];
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="relative py-24 lg:py-32">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400 mb-4 block">The Process</span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-            From registration to revelation
+    <section id="how-it-works" className="py-20 lg:py-28 bg-[#0D0D14]">
+      <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+        <div className="text-center mb-14">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#10B981] mb-3 block">The Process</span>
+          <h2 className="text-[28px] sm:text-[32px] font-bold text-[#F1F5F9] tracking-[-0.02em]">
+            From registration to opportunity
           </h2>
-          <p className="mt-4 text-gray-400 leading-relaxed">
-            Six simple steps between you and your next football opportunity.
-          </p>
         </div>
 
-        <div className="relative">
-          <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-emerald-500/20 via-emerald-500/10 to-transparent" />
-
-          <div className="space-y-8 lg:space-y-0">
-            {STEPS.map((step, i) => {
-              const isLeft = i % 2 === 0;
-              return (
-                <div key={step.number} className="relative lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center lg:pb-12">
-                  <div className={`hidden lg:block absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-2xl bg-[#0c1017] border border-emerald-500/20 flex items-center justify-center z-10`}>
-                    <span className="text-xs font-bold text-emerald-400">{step.number}</span>
-                  </div>
-
-                  <div className={`${isLeft ? "lg:text-right lg:pr-16" : "lg:col-start-2 lg:pl-16"}`}>
-                    <div className={`flex items-start gap-4 ${isLeft ? "lg:flex-row-reverse" : ""}`}>
-                      <div className="flex lg:hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/[0.08] border border-emerald-500/20">
-                        <span className="text-xs font-bold text-emerald-400">{step.number}</span>
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-3 mb-2">
-                          <step.icon className="h-5 w-5 text-emerald-400 hidden lg:block" />
-                          <h3 className="text-lg font-semibold text-white">{step.title}</h3>
-                        </div>
-                        <p className="text-sm text-gray-500 leading-relaxed max-w-sm">{step.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {STEPS.map((step) => (
+            <div key={step.num} className="relative group p-6 rounded-xl bg-[#111118] border border-white/[0.04] hover:border-white/[0.06] transition-all duration-300">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-[28px] font-bold text-white/[0.04] tabular-nums">{step.num}</span>
+                <step.icon className="h-5 w-5 text-[#10B981]" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-[14px] font-semibold text-[#F1F5F9] mb-1.5">{step.title}</h3>
+              <p className="text-[13px] text-[#636681] leading-[1.6]">{step.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
