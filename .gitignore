@@ -12,6 +12,7 @@ build/
 .DS_Store
 *.pem
 .env*.local
+.env
 
 # debug
 npm-debug.log*
@@ -19,3 +20,10 @@ npm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# database
+prisma/dev.db
+prisma/dev.db-journal
+
+# uploads
+public/uploads/*

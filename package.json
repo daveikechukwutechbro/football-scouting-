@@ -5,20 +5,32 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
     "next": "15.3.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "lucide-react": "^0.468.0"
+    "lucide-react": "^0.468.0",
+    "@prisma/client": "^6.9.0",
+    "next-auth": "^5.0.0-beta.28",
+    "bcryptjs": "^3.0.2",
+    "zod": "^3.24.4",
+    "nodemailer": "^7.0.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/nodemailer": "^7.0.0",
     "tailwindcss": "^4.1.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "prisma": "^6.9.0"
   }
 }

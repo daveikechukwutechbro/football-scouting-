@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  role          String    @default("player") // "admin" | "player"
+  name          String?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  player        Player?
+
+  @@map("users")
+}
+
+model Player {
+  id                String    @id @default(cuid())
+  userId            String    @unique @map("user_id")
+  firstName         String    @map("first_name")
+  lastName          String    @map("last_name")
+  dateOfBirth       DateTime  @map("date_of_birth")
+  nationality       String
+  countryOfResidence String  @map("country_of_residence")
+  city              String
+  phoneNumber       String    @map("phone_number")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guardian          GuardianInfo?
+  footballProfile   FootballProfile?
+  physicalProfile   PhysicalProfile?
+  careerStats       CareerStatistics?
+  playingStyle      PlayingStyleRecord?
+  media             PlayerMedia?
+  availability      PlayerAvailability?
+  socialLinks       PlayerSocialLinks?
+  documents         PlayerDocument[]
+  applications      Application[]
+
+  @@map("players")
+}
+
+model GuardianInfo {
+  id          String  @id @default(cuid())
+  playerId    String  @unique @map("player_id")
+  name        String  @map("guardian_name")
+  relationship String
+  email       String  @map("guardian_email")
+  phone       String  @map("guardian_phone")
+
+  player      Player  @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@map("guardian_info")
+}
+
+model FootballProfile {
+  id                String  @id @default(cuid())
+  playerId          String  @unique @map("player_id")
+  primaryPosition   String  @map("primary_position")
+  secondaryPosition String? @map("secondary_position")
+  preferredFoot     String  @map("preferred_foot")
+  currentLevel      String  @map("current_level")
+  contractStatus    String  @map("contract_status")
+  currentClub       String? @map("current_club")
+  yearsExperience   Int?    @map("years_experience")
+  previousClubs     String? @map("previous_clubs")
+
+  player            Player  @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@map("football_profiles")
+}
+
+model PhysicalProfile {
+  id          String  @id @default(cuid())
+  playerId    String  @unique @map("player_id")
+  heightCm    Int     @map("height_cm")
+  weightKg    Int     @map("weight_kg")
+  bodyType    String? @map("body_type")
+  fitnessLevel String? @map("fitness_level")
+  injuries    String?
+
+  player      Player  @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@map("physical_profiles")
+}
+
+model CareerStatistics {
+  id              String  @id @default(cuid())
+  playerId        String  @unique @map("player_id")
+  totalAppearances Int    @map("total_appearances")
+  totalGoals      Int     @map("total_goals")
+  totalAssists    Int     @map("total_assists")
+  cleanSheets     Int?    @map("clean_sheets")
+  yellowCards     Int?    @map("yellow_cards")
+  redCards        Int?    @map("red_cards")
+
+  player          Player  @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@map("career_statistics")
+}
+
+model PlayingStyleRecord {
+  id              String  @id @default(cuid())
+  playerId        String  @unique @map("player_id")
+  biography       String?
+  playingStyle    String  @map("playing_style")
+  strengths       String
+  weaknesses      String?
+  favoritePosition String? @map("favorite_position")
+  favoritePlayer  String? @map("favorite_player")
+  careerGoal      String? @map("career_goal")
+  motivation      String?
+
+  player          Player  @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@map("playing_styles")
+}
+
+model PlayerMedia {
+  id          String @id @default(cuid())
+  playerId    String @unique @map("player_id")
+  videos      String @default("[]") // JSON array of URLs
+
+  player      Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@map("player_media")
+}
+
+model PlayerDocument {
+  id             String   @id @default(cuid())
+  playerId       String   @map("player_id")
+  documentType   String   @map("document_type")
+  fileUrl        String   @map("file_url")
+  originalFilename String @map("original_filename")
+  fileSizeBytes  Int      @map("file_size_bytes")
+  mimeType       String   @map("mime_type")
+  uploadedAt     DateTime @default(now()) @map("uploaded_at")
+
+  player         Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@map("player_documents")
+}
+
+model PlayerAvailability {
+  id                     String   @id @default(cuid())
+  playerId               String   @unique @map("player_id")
+  availableForTrials     Boolean  @map("available_for_trials")
+  availableImmediately   Boolean  @map("available_immediately")
+  canTravel              Boolean  @map("can_travel")
+  canRelocate            Boolean  @map("can_relocate")
+  preferredCountry       String?  @map("preferred_country")
+  preferredLeague        String?  @map("preferred_league")
+  preferredTrialDates    String?  @map("preferred_trial_dates")
+  preferredCommunication String   @map("preferred_communication")
+
+  player                 Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@map("player_availability")
+}
+
+model PlayerSocialLinks {
+  id        String @id @default(cuid())
+  playerId  String @unique @map("player_id")
+  instagram String?
+  facebook  String?
+  tiktok    String?
+  youtube   String?
+  twitter   String?
+  linkedin  String?
+
+  player    Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@map("player_social_links")
+}
+
+model Application {
+  id          String   @id @default(cuid())
+  playerId    String   @map("player_id")
+  status      String   @default("submitted") // submitted | under_review | shortlisted | rejected
+  refNumber   String   @unique @map("ref_number")
+  notes       String?
+  submittedAt DateTime @default(now()) @map("submitted_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@map("applications")
+}
+
+model Trial {
+  id          String   @id @default(cuid())
+  title       String
+  location    String
+  date        DateTime
+  positions   String   @default("[]") // JSON array
+  deadline    DateTime
+  description String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("trials")
+}

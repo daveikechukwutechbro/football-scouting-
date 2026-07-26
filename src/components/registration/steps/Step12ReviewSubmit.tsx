@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Card from "@/components/ui/Card";
 import { POSITIONS, COUNTRIES, PREFERRED_FOOT, FOOTBALL_LEVELS } from "@/lib/constants";
-import type { StepProps } from "@/lib/constants";
+import type { StepProps } from "@/lib/types";
 
 function getCountryLabel(code: string): string {
   if (!code) return "Not provided";
@@ -134,10 +134,14 @@ export default function Step12ReviewSubmit({ data }: StepProps) {
       title: "Playing Style",
       icon: Globe,
       fields: [
+        { label: "Biography", value: data.biography || "" },
         { label: "Playing Style", value: data.playingStyle || "" },
         { label: "Strengths", value: data.strengths || "" },
         { label: "Weaknesses", value: data.weaknesses || "" },
-        { label: "Idols", value: data.idols || "" },
+        { label: "Favorite Position", value: getPositionLabel(data.favoritePosition) },
+        { label: "Favorite Player", value: data.favoritePlayer || "" },
+        { label: "Career Goal", value: data.careerGoal || "" },
+        { label: "Motivation", value: data.motivation || "" },
       ],
     },
     {
@@ -154,36 +158,63 @@ export default function Step12ReviewSubmit({ data }: StepProps) {
     {
       title: "Documents",
       icon: FileText,
-      fields: [
-        { label: "Documents Added", value: `${(data.documents || []).length} document(s)` },
-        ...(data.documents || []).slice(0, 3).map((name: string, i: number) => ({
-          label: `Document ${i + 1}`,
-          value: name,
-        })),
-      ],
+      fields: (() => {
+        const docs = data.documents || {};
+        const docEntries = Object.entries(docs).filter(([, v]) => v !== null);
+        if (docEntries.length === 0) return [{ label: "Documents Added", value: "None" }];
+        return [
+          { label: "Documents Added", value: `${docEntries.length} document(s)` },
+          ...docEntries.slice(0, 7).map(([key, file]) => ({
+            label: key.replace(/([A-Z])/g, " $1").replace(/^./, (s: string) => s.toUpperCase()),
+            value: file instanceof File ? file.name : String(file),
+          })),
+        ];
+      })(),
     },
     {
       title: "Availability",
       icon: Calendar,
       fields: [
-        { label: "Available From", value: data.availableFrom || "" },
         {
-          label: "Willing to Relocate",
-          value: data.willingToRelocate === true ? "Yes" : data.willingToRelocate === false ? "No" : "",
+          label: "Available for Trials",
+          value: data.availableForTrials === true ? "Yes" : data.availableForTrials === false ? "No" : "",
         },
-        { label: "Preferred Locations", value: data.preferredLocations || "" },
-        { label: "Preferred Contact", value: data.preferredContact || "" },
+        {
+          label: "Available Immediately",
+          value: data.availableImmediately === true ? "Yes" : data.availableImmediately === false ? "No" : "",
+        },
+        {
+          label: "Can Travel",
+          value: data.canTravel === true ? "Yes" : data.canTravel === false ? "No" : "",
+        },
+        {
+          label: "Can Relocate",
+          value: data.canRelocate === true ? "Yes" : data.canRelocate === false ? "No" : "",
+        },
+        { label: "Preferred Country", value: getCountryLabel(data.preferredCountry) },
+        { label: "Preferred League", value: data.preferredLeague || "" },
+        { label: "Preferred Trial Dates", value: data.preferredTrialDates || "" },
+        { label: "Preferred Communication", value: data.preferredCommunication || "" },
       ],
     },
     {
       title: "Social Media",
       icon: Globe,
-      fields: [
-        { label: "Instagram", value: data.instagram || "" },
-        { label: "X / Twitter", value: data.twitter || "" },
-        { label: "Facebook", value: data.facebook || "" },
-        { label: "YouTube", value: data.youtube || "" },
-      ],
+      fields: (() => {
+        const links = data.socialLinks || {};
+        const socialFields = [
+          { key: "instagram", label: "Instagram" },
+          { key: "facebook", label: "Facebook" },
+          { key: "tiktok", label: "TikTok" },
+          { key: "youtube", label: "YouTube" },
+          { key: "twitter", label: "X / Twitter" },
+          { key: "linkedin", label: "LinkedIn" },
+        ];
+        return socialFields.map(({ key, label }) => ({
+          label,
+          value: links[key] || "",
+        }));
+      })(),
     },
   ];
 

@@ -57,20 +57,25 @@ const defaultFormData = {
   cleanSheets: "",
   yellowCards: "",
   redCards: "",
+  biography: "",
   playingStyle: "",
   strengths: "",
   weaknesses: "",
-  idols: "",
+  favoritePosition: "",
+  favoritePlayer: "",
+  careerGoal: "",
+  motivation: "",
   videos: [] as string[],
-  documents: [] as string[],
-  availableFrom: "",
-  willingToRelocate: null as boolean | null,
-  preferredLocations: "",
-  preferredContact: "",
-  instagram: "",
-  twitter: "",
-  facebook: "",
-  youtube: "",
+  documents: {} as Record<string, File | null>,
+  availableForTrials: null as boolean | null,
+  availableImmediately: null as boolean | null,
+  canTravel: null as boolean | null,
+  canRelocate: null as boolean | null,
+  preferredCountry: "",
+  preferredLeague: "",
+  preferredTrialDates: "",
+  preferredCommunication: "",
+  socialLinks: {} as Record<string, string>,
 };
 
 type FormData = typeof defaultFormData;
@@ -151,8 +156,11 @@ function validateStep(step: number, data: FormData, hasGuardianStep: boolean): R
     case 9:
       break;
     case 10:
-      if (!data.availableFrom) errors.availableFrom = "Available from date is required";
-      if (data.willingToRelocate === null) errors.willingToRelocate = "Please select an option";
+      if (data.availableForTrials === null) errors.availableForTrials = "Please select an option";
+      if (data.availableImmediately === null) errors.availableImmediately = "Please select an option";
+      if (data.canTravel === null) errors.canTravel = "Please select an option";
+      if (data.canRelocate === null) errors.canRelocate = "Please select an option";
+      if (!data.preferredCommunication) errors.preferredCommunication = "Preferred communication method is required";
       break;
     case 11:
       break;
@@ -250,14 +258,27 @@ export default function RegisterPage() {
     }
     setIsSubmitting(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        setErrors({ general: result.error || "Submission failed. Please try again." });
+        setIsSubmitting(false);
+        return;
+      }
+
       setIsSubmitted(true);
       localStorage.removeItem(STORAGE_KEY);
       setTimeout(() => {
         window.location.href = "/confirmation";
       }, 1500);
     } catch {
-      setErrors({ general: "Submission failed. Please try again." });
+      setErrors({ general: "Network error. Please check your connection and try again." });
       setIsSubmitting(false);
     }
   }, [formData, hasGuardianStep]);
