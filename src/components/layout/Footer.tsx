@@ -1,127 +1,91 @@
 import Link from "next/link";
-import { Shield, Mail, Phone, Instagram, Twitter, Facebook, Youtube } from "lucide-react";
 
-const quickLinks = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/#about" },
-  { label: "Register", href: "/register" },
-  { label: "Login", href: "/login" },
-  { label: "Contact", href: "/contact" },
+const QUICK_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About Us" },
+  { href: "/register", label: "Register" },
+  { href: "/login", label: "Player Login" },
+  { href: "/contact", label: "Contact" },
 ];
 
-const legalLinks = [
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms of Use", href: "/terms" },
-  { label: "Cookie Policy", href: "/cookies" },
-];
-
-const socialLinks = [
-  { icon: Instagram, label: "Instagram", href: "#" },
-  { icon: Twitter, label: "X", href: "#" },
-  { icon: Facebook, label: "Facebook", href: "#" },
-  { icon: Youtube, label: "YouTube", href: "#" },
+const LEGAL_LINKS = [
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms of Use" },
+  { href: "/cookies", label: "Cookie Policy" },
 ];
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0A0E13] border-t border-white/5">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="sm:col-span-2 lg:col-span-1">
-            <Link href="/" className="inline-flex items-center gap-2.5 mb-4">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0D7B3E] shadow-md shadow-[#0D7B3E]/20">
-                <Shield className="h-5 w-5 text-white" />
+    <footer className="relative bg-[#060910] border-t border-white/[0.04]">
+      <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/[0.02] to-transparent pointer-events-none" />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+          <div className="lg:col-span-1">
+            <Link href="/" className="flex items-center gap-2.5 mb-5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600">
+                <svg viewBox="0 0 24 24" className="h-4 w-4 text-white fill-current">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
               </div>
-              <span className="text-xl font-extrabold tracking-tight text-white">
-                PRO<span className="text-[#0D7B3E]">SCOUT</span>
-              </span>
+              <span className="text-lg font-bold text-white">ProScout <span className="text-emerald-400">Football</span></span>
             </Link>
-            <p className="text-sm leading-relaxed text-gray-400 max-w-xs">
-              The premier platform connecting talented footballers with professional scouts
-              worldwide. Your journey to the top starts here.
+            <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
+              The premier platform connecting aspiring footballers with professional scouts worldwide. Your next opportunity starts here.
             </p>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
-              Quick Links
-            </h3>
-            <ul className="space-y-3">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-gray-400 hover:text-[#0D7B3E] transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
-              Legal
-            </h3>
-            <ul className="space-y-3">
-              {legalLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-gray-400 hover:text-[#0D7B3E] transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
-              Contact
-            </h3>
-            <div className="space-y-3">
-              <a
-                href="mailto:info@proscoutfootball.com"
-                className="flex items-center gap-3 text-sm text-gray-400 hover:text-[#0D7B3E] transition-colors"
-              >
-                <Mail className="h-4 w-4 shrink-0" />
-                info@proscoutfootball.com
-              </a>
-              <a
-                href="tel:+15551234567"
-                className="flex items-center gap-3 text-sm text-gray-400 hover:text-[#0D7B3E] transition-colors"
-              >
-                <Phone className="h-4 w-4 shrink-0" />
-                +1 (555) 123-4567
-              </a>
-            </div>
-
-            <div className="flex gap-3 mt-5">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1A1F2E] text-gray-400 hover:bg-[#0D7B3E]/10 hover:text-[#0D7B3E] transition-all"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-4 w-4" />
+            <div className="flex items-center gap-4 mt-6">
+              {["X", "IG", "YT", "FB"].map((s) => (
+                <a key={s} href="#" className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.04] text-gray-500 hover:text-white hover:bg-white/[0.08] text-xs font-bold transition-all">
+                  {s}
                 </a>
               ))}
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="border-t border-white/5">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-center text-xs text-gray-500">
+          <div>
+            <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-5">Quick Links</h4>
+            <ul className="space-y-3">
+              {QUICK_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-sm text-gray-500 hover:text-emerald-400 transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-5">Legal</h4>
+            <ul className="space-y-3">
+              {LEGAL_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-sm text-gray-500 hover:text-emerald-400 transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-5">Contact</h4>
+            <ul className="space-y-3">
+              <li className="text-sm text-gray-500">info@proscoutfootball.com</li>
+              <li className="text-sm text-gray-500">support@proscoutfootball.com</li>
+              <li className="text-sm text-gray-500">London, United Kingdom</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-14 pt-8 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-gray-600">
             &copy; {new Date().getFullYear()} ProScout Football. All rights reserved.
           </p>
+          <div className="flex items-center gap-6">
+            <Link href="/privacy" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Privacy</Link>
+            <Link href="/terms" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Terms</Link>
+            <Link href="/cookies" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Cookies</Link>
+          </div>
         </div>
       </div>
     </footer>

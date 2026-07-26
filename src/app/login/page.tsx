@@ -1,86 +1,82 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import Card from "@/components/ui/Card";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const validate = () => {
-    const newErrors: typeof errors = {};
-
-    if (!email.trim()) {
-      newErrors.email = "Email or phone number is required";
-    }
-
-    if (!password) {
-      newErrors.password = "Password is required";
-    } else if (password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!validate()) return;
-
-    setIsLoading(true);
-    setErrors({});
+    setError("");
+    setLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setErrors({ general: "Invalid email or password. Please try again." });
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError("Invalid email or password. Please try again.");
+      } else {
+        router.push("/admin");
+        router.refresh();
+      }
     } catch {
-      setErrors({ general: "Something went wrong. Please try again." });
+      setError("An error occurred. Please try again.");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-[#0F1419] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        <Card padding="lg">
-          <div className="text-center mb-8">
-            <Link href="/" className="inline-flex items-center gap-2 mb-6">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0D7B3E]">
-                <span className="text-white font-bold text-lg">P</span>
-              </div>
-              <span className="text-xl font-bold text-white">ProScout</span>
-            </Link>
-            <h1 className="text-2xl font-bold text-white">Welcome Back</h1>
-            <p className="mt-1 text-sm text-gray-400">Sign in to your player account</p>
-          </div>
+    <div className="min-h-screen flex items-center justify-center relative px-4">
+      <div className="absolute inset-0 bg-[#080c12]" />
+      <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-emerald-500/[0.03] rounded-full blur-[100px]" />
+      <div className="absolute bottom-1/3 right-1/3 w-[300px] h-[300px] bg-emerald-500/[0.02] rounded-full blur-[80px]" />
 
-          {errors.general && (
-            <div className="mb-6 flex items-start gap-3 rounded-xl bg-red-500/10 border border-red-500/20 p-4">
-              <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
-              <p className="text-sm text-red-400">{errors.general}</p>
+      <div className="relative w-full max-w-md">
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-flex items-center gap-2 mb-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/20">
+              <svg viewBox="0 0 24 24" className="h-5 w-5 text-white fill-current">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+              </svg>
             </div>
-          )}
+          </Link>
+          <h1 className="text-2xl font-bold text-white">Welcome back</h1>
+          <p className="text-sm text-gray-500 mt-1">Sign in to your ProScout account</p>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="p-8 rounded-2xl bg-[#0c1017] border border-white/[0.04]">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            {error && (
+              <div className="p-3 rounded-xl bg-red-500/[0.06] border border-red-500/15">
+                <p className="text-sm text-red-400">{error}</p>
+              </div>
+            )}
+
             <Input
-              label="Email or Phone"
+              label="Email"
+              type="email"
               placeholder="you@example.com"
-              icon={Mail}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              error={errors.email}
               required
-              autoComplete="username"
+              icon={Mail}
+              id="login-email"
             />
 
             <div className="relative">
@@ -88,18 +84,16 @@ export default function LoginPage() {
                 label="Password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
-                icon={Lock}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                error={errors.password}
                 required
-                autoComplete="current-password"
+                icon={Lock}
+                id="login-password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[38px] text-gray-500 hover:text-gray-300 transition-colors"
-                tabIndex={-1}
+                className="absolute right-3 top-[38px] text-gray-500 hover:text-white transition-colors"
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -107,52 +101,30 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-700 bg-[#232838] text-[#0D7B3E] focus:ring-[#0D7B3E] focus:ring-offset-0"
-                />
-                <span className="text-sm text-gray-400">Remember me</span>
+                <input type="checkbox" className="w-4 h-4 rounded border-gray-700 bg-[#232838] text-emerald-500 focus:ring-emerald-500/20" />
+                <span className="text-sm text-gray-500">Remember me</span>
               </label>
-              <Link
-                href="/forgot-password"
-                className="text-sm text-[#0D7B3E] hover:text-[#0a6632] transition-colors"
-              >
-                Forgot Password?
+              <Link href="/forgot-password" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">
+                Forgot password?
               </Link>
             </div>
 
-            <Button
-              type="submit"
-              variant="primary"
-              loading={isLoading}
-              className="w-full"
-              size="lg"
-            >
-              {isLoading ? "Signing in..." : "Sign In"}
+            <Button type="submit" variant="primary" loading={loading} className="w-full" size="lg">
+              {loading ? (
+                <><Loader2 className="h-4 w-4 animate-spin" /> Signing in...</>
+              ) : (
+                <>Sign In <ArrowRight className="h-4 w-4" /></>
+              )}
             </Button>
           </form>
+        </div>
 
-          <div className="mt-6 relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-700" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-[#1A1F2E] text-gray-500">or</span>
-            </div>
-          </div>
-
-          <p className="mt-6 text-center text-sm text-gray-400">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/register"
-              className="font-medium text-[#0D7B3E] hover:text-[#0a6632] transition-colors"
-            >
-              Register
-            </Link>
-          </p>
-        </Card>
+        <p className="text-center text-sm text-gray-500 mt-6">
+          Don&apos;t have an account?{" "}
+          <Link href="/register" className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
+            Register free
+          </Link>
+        </p>
       </div>
     </div>
   );

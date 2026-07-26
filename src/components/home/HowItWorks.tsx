@@ -1,100 +1,83 @@
-const steps = [
+import { UserPlus, ClipboardCheck, Video, Send, Eye, PhoneCall } from "lucide-react";
+
+const STEPS = [
   {
+    icon: UserPlus,
     number: "01",
     title: "Create Account",
-    description:
-      "Sign up with your email and set up your player account in minutes.",
+    description: "Sign up in under a minute with just your email. No fees, no commitments.",
   },
   {
+    icon: ClipboardCheck,
     number: "02",
-    title: "Complete Profile",
-    description:
-      "Fill in your personal details, football background, and physical stats.",
+    title: "Build Your Profile",
+    description: "Complete your football profile with stats, physical attributes, and playing style.",
   },
   {
+    icon: Video,
     number: "03",
-    title: "Upload Videos & Docs",
-    description:
-      "Share highlight reels, match footage, and supporting documents.",
+    title: "Upload Highlights",
+    description: "Share match footage and training clips that showcase your best moments.",
   },
   {
+    icon: Send,
     number: "04",
     title: "Submit Application",
-    description:
-      "Review your profile and submit it for scout evaluation.",
+    description: "Review everything and submit your profile to our global scout network.",
   },
   {
+    icon: Eye,
     number: "05",
-    title: "Scout Review",
-    description:
-      "Our professional scouts carefully review every submission.",
+    title: "Get Discovered",
+    description: "Professional scouts review your profile and shortlist standout talent.",
   },
   {
+    icon: PhoneCall,
     number: "06",
-    title: "Get Contacted",
-    description:
-      "If selected, you'll receive a trial invitation directly.",
+    title: "Receive Opportunities",
+    description: "Get contacted directly by scouts, clubs, and academies for trials and signings.",
   },
 ];
 
 export default function HowItWorks() {
   return (
-    <section className="bg-[#0F1419] px-6 py-20">
-      <div className="mx-auto max-w-5xl">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-white sm:text-4xl">
-            How It Works
+    <section id="how-it-works" className="relative py-24 lg:py-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400 mb-4 block">The Process</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+            From registration to revelation
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[#9CA3AF]">
-            From registration to trial invitation in 6 simple steps
+          <p className="mt-4 text-gray-400 leading-relaxed">
+            Six simple steps between you and your next football opportunity.
           </p>
         </div>
 
-        <div className="relative mt-16">
-          <div className="absolute left-6 top-0 hidden h-full w-px bg-gradient-to-b from-[#0D7B3E]/50 via-[#0D7B3E]/20 to-transparent sm:left-8 lg:left-1/2 lg:block" />
+        <div className="relative">
+          <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-emerald-500/20 via-emerald-500/10 to-transparent" />
 
-          <div className="flex flex-col gap-10">
-            {steps.map((step, index) => {
-              const isEven = index % 2 === 0;
+          <div className="space-y-8 lg:space-y-0">
+            {STEPS.map((step, i) => {
+              const isLeft = i % 2 === 0;
               return (
-                <div
-                  key={step.number}
-                  className="relative flex items-start gap-6 lg:items-center"
-                >
-                  <div className="relative z-10 flex-shrink-0">
-                    <div
-                      className={`flex h-12 w-12 items-center justify-center rounded-full border-2 text-sm font-bold ${
-                        index % 2 === 0
-                          ? "border-[#0D7B3E] bg-[#0D7B3E]/15 text-[#0D7B3E]"
-                          : "border-[#D4A843] bg-[#D4A843]/10 text-[#D4A843]"
-                      }`}
-                    >
-                      {step.number}
-                    </div>
+                <div key={step.number} className="relative lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center lg:pb-12">
+                  <div className={`hidden lg:block absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-2xl bg-[#0c1017] border border-emerald-500/20 flex items-center justify-center z-10`}>
+                    <span className="text-xs font-bold text-emerald-400">{step.number}</span>
                   </div>
 
-                  <div className="hidden flex-1 lg:block">
-                    <div
-                      className={`w-[calc(50%-3rem)] ${
-                        isEven ? "mr-auto text-right" : "ml-auto text-left"
-                      }`}
-                    >
-                      <h3 className="text-lg font-semibold text-white">
-                        {step.title}
-                      </h3>
-                      <p className="mt-1 text-sm text-[#9CA3AF]">
-                        {step.description}
-                      </p>
+                  <div className={`${isLeft ? "lg:text-right lg:pr-16" : "lg:col-start-2 lg:pl-16"}`}>
+                    <div className={`flex items-start gap-4 ${isLeft ? "lg:flex-row-reverse" : ""}`}>
+                      <div className="flex lg:hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/[0.08] border border-emerald-500/20">
+                        <span className="text-xs font-bold text-emerald-400">{step.number}</span>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <step.icon className="h-5 w-5 text-emerald-400 hidden lg:block" />
+                          <h3 className="text-lg font-semibold text-white">{step.title}</h3>
+                        </div>
+                        <p className="text-sm text-gray-500 leading-relaxed max-w-sm">{step.description}</p>
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="flex-1 lg:hidden">
-                    <h3 className="text-lg font-semibold text-white">
-                      {step.title}
-                    </h3>
-                    <p className="mt-1 text-sm text-[#9CA3AF]">
-                      {step.description}
-                    </p>
                   </div>
                 </div>
               );

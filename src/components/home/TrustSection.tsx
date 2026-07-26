@@ -1,72 +1,64 @@
 import { UserCheck, Video, Trophy, Zap, Smartphone } from "lucide-react";
 
-const trustCards = [
+const FEATURES = [
   {
     icon: UserCheck,
     title: "Scout-Reviewed Profiles",
-    description:
-      "Every profile is reviewed by experienced professional scouts who know what clubs are looking for.",
+    description: "Every profile is reviewed by professional scouts from top clubs and academies worldwide.",
   },
   {
     icon: Video,
     title: "Video Highlight Support",
-    description:
-      "Upload match footage and highlight reels directly to your profile so scouts can see you in action.",
+    description: "Upload match footage and training clips directly to your profile for scouts to evaluate.",
   },
   {
     icon: Trophy,
     title: "Proven Track Record",
-    description:
-      "Over 500 players have been scouted and connected with professional clubs through our platform.",
+    description: "Over 500 players have been shortlisted and connected with clubs through our platform.",
   },
   {
     icon: Zap,
     title: "Fast Response Times",
-    description:
-      "Receive feedback on your application within 14 days. No long waits, no guesswork.",
+    description: "Receive feedback on your application within 48 hours. No long waits, no uncertainty.",
   },
   {
     icon: Smartphone,
-    title: "Mobile-Friendly Platform",
-    description:
-      "Manage your profile, upload videos, and track applications from any device, anywhere.",
+    title: "Mobile-First Platform",
+    description: "Register and manage your profile from anywhere, on any device, at any time.",
   },
 ];
 
 export default function TrustSection() {
   return (
-    <section className="bg-[#0F1419] px-6 py-20">
-      <div className="mx-auto max-w-6xl">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-white sm:text-4xl">
-            Why Players Trust{" "}
-            <span className="text-[#0D7B3E]">ProScout</span>
+    <section className="relative py-24 lg:py-32">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.015] to-transparent pointer-events-none" />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400 mb-4 block">Why ProScout</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+            Built for players who mean business
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[#9CA3AF]">
-            We&apos;ve built a platform that puts players first.
+          <p className="mt-4 text-gray-400 leading-relaxed">
+            Every feature is designed to help you get noticed by the right people at the right time.
           </p>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {trustCards.map((card) => {
-            const Icon = card.icon;
-            return (
-              <div
-                key={card.title}
-                className="group rounded-xl border border-white/10 bg-[#1A1F2E] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#0D7B3E]/40 hover:shadow-lg hover:shadow-[#0D7B3E]/5"
-              >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#0D7B3E]/15 text-[#0D7B3E] transition-colors group-hover:bg-[#0D7B3E]/25">
-                  <Icon className="h-6 w-6" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {FEATURES.map((feature, i) => (
+            <div
+              key={feature.title}
+              className="group relative p-6 rounded-2xl bg-[#0c1017] border border-white/[0.04] hover:border-emerald-500/20 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/[0.03]"
+            >
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/[0.08] text-emerald-400 mb-4 group-hover:bg-emerald-500/[0.12] transition-colors">
+                  <feature.icon className="h-5 w-5" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">
-                  {card.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-[#9CA3AF]">
-                  {card.description}
-                </p>
+                <h3 className="text-base font-semibold text-white mb-2">{feature.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{feature.description}</p>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
     </section>

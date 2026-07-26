@@ -1,73 +1,73 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { FAQ_ITEMS } from "@/lib/constants";
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const toggle = useCallback(
-    (index: number) => {
-      setOpenIndex((prev) => (prev === index ? null : index));
-    },
-    [],
-  );
-
   return (
-    <section id="faq" className="bg-[#0F1419] px-6 py-20">
-      <div className="mx-auto max-w-3xl">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-white sm:text-4xl">
-            Frequently Asked{" "}
-            <span className="text-[#0D7B3E]">Questions</span>
+    <section id="faq" className="relative py-24 lg:py-32">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.015] to-transparent pointer-events-none" />
+      <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400 mb-4 block">FAQ</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+            Frequently asked questions
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[#9CA3AF]">
-            Everything you need to know about registering
+          <p className="mt-4 text-gray-400 leading-relaxed">
+            Everything you need to know about getting started with ProScout.
           </p>
         </div>
 
-        <div className="mt-14 space-y-3">
-          {FAQ_ITEMS.map((item, index) => {
-            const isOpen = openIndex === index;
+        <div className="space-y-3">
+          {FAQ_ITEMS.map((item, i) => {
+            const isOpen = openIndex === i;
             return (
               <div
-                key={index}
-                className={`overflow-hidden rounded-xl border transition-colors duration-200 ${
+                key={i}
+                className={`rounded-2xl border transition-all duration-300 ${
                   isOpen
-                    ? "border-[#0D7B3E]/40 bg-[#1A1F2E]"
-                    : "border-white/10 bg-[#1A1F2E]"
+                    ? "bg-[#0c1017] border-emerald-500/15"
+                    : "bg-[#0c1017]/50 border-white/[0.04] hover:border-white/[0.08]"
                 }`}
               >
                 <button
-                  onClick={() => toggle(index)}
+                  onClick={() => setOpenIndex(isOpen ? null : i)}
+                  className="flex items-center justify-between w-full px-6 py-5 text-left"
                   aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
                 >
-                  <span className="text-base font-medium text-white">
-                    {item.question}
-                  </span>
+                  <span className="text-sm font-semibold text-white pr-4">{item.question}</span>
                   <ChevronDown
-                    className={`h-5 w-5 flex-shrink-0 text-[#9CA3AF] transition-transform duration-300 ${
-                      isOpen ? "rotate-180 text-[#0D7B3E]" : ""
+                    className={`h-4 w-4 text-gray-500 shrink-0 transition-transform duration-300 ${
+                      isOpen ? "rotate-180 text-emerald-400" : ""
                     }`}
                   />
                 </button>
-
                 <div
-                  role="region"
-                  className="overflow-hidden transition-[max-height] duration-300 ease-in-out"
-                  style={{ maxHeight: isOpen ? "400px" : "0px" }}
+                  className="overflow-hidden transition-all duration-300 ease-in-out"
+                  style={{
+                    maxHeight: isOpen ? "500px" : "0px",
+                    opacity: isOpen ? 1 : 0,
+                  }}
                 >
-                  <div className="border-t border-white/5 px-6 pb-5 pt-4">
-                    <p className="text-sm leading-relaxed text-[#9CA3AF]">
-                      {item.answer}
-                    </p>
+                  <div className="px-6 pb-5 text-sm text-gray-400 leading-relaxed">
+                    {item.answer}
                   </div>
                 </div>
               </div>
             );
           })}
+        </div>
+
+        <div className="mt-12 text-center">
+          <p className="text-sm text-gray-500">
+            Still have questions?{" "}
+            <a href="/contact" className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
+              Get in touch
+            </a>
+          </p>
         </div>
       </div>
     </section>
