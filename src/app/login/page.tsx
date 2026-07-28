@@ -4,7 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogIn, AlertCircle } from "lucide-react";
+import { LogIn, AlertCircle, Mail, ArrowRight } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,13 +12,38 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resentMsg, setResentMsg] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); setError(""); setLoading(true);
     const res = await signIn("credentials", { email, password, redirect: false });
     setLoading(false);
-    if (res?.error) setError("Invalid email or password. Please try again.");
-    else { router.push("/admin"); router.refresh(); }
+    if (res?.error) {
+      setError("Invalid email or password, or your email is not yet verified.");
+    } else {
+      try {
+        const sessRes = await fetch("/api/auth/session");
+        const session = await sessRes.json();
+        if (session?.user?.role === "admin") router.push("/admin");
+        else router.push("/");
+      } catch { router.push("/"); }
+      router.refresh();
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email.trim()) { setError("Enter your email first"); return; }
+    setResending(true); setResentMsg("");
+    try {
+      const res = await fetch("/api/auth/resend-verification", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (res.ok) setResentMsg("Verification email sent! Check your inbox.");
+      else setError(data.error || "Failed to resend");
+    } catch { setError("Network error"); }
+    setResending(false);
   };
 
   return (
@@ -41,6 +66,12 @@ export default function LoginPage() {
               <span className="text-sm text-red-600 dark:text-red-400">{error}</span>
             </div>
           )}
+          {resentMsg && (
+            <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 mb-4">
+              <Mail className="h-4 w-4 text-green-500 shrink-0" />
+              <span className="text-sm text-green-600 dark:text-green-400">{resentMsg}</span>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <input type="email" placeholder="Email address" required value={email} onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-border bg-input text-foreground placeholder-muted text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
@@ -51,9 +82,23 @@ export default function LoginPage() {
               <LogIn className="h-4 w-4" /> {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
+
+          <div className="mt-4 flex flex-col items-center gap-2 text-center">
+            <button type="button" disabled={resending} onClick={handleResendVerification}
+              className="text-xs text-muted hover:text-primary transition-colors underline underline-offset-2">
+              {resending ? "Sending..." : "Resend verification email"}
+            </button>
+            <Link href="/forgot-password" className="text-xs text-muted hover:text-primary transition-colors underline underline-offset-2">
+              Forgot password?
+            </Link>
+          </div>
         </div>
+
         <p className="mt-6 text-center text-sm text-muted">
-          Don&apos;t have an account? <Link href="/register" className="font-medium text-primary hover:text-primary-hover">Register now</Link>
+          Don&apos;t have an account?{" "}
+          <Link href="/register" className="font-medium text-primary hover:text-primary-hover">
+            Register now
+          </Link>
         </p>
       </div>
     </section>

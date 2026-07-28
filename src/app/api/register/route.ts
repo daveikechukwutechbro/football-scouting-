@@ -1,6 +1,8 @@
+import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { sendVerificationEmail } from "@/lib/email";
 
 function generateRefNumber(): string {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -42,12 +44,15 @@ export async function POST(req: NextRequest) {
 
     const passwordHash = await bcrypt.hash(password, 12);
 
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+
     const user = await prisma.user.create({
       data: {
         email,
         passwordHash,
         role: "player",
         name: `${firstName || ""} ${lastName || ""}`.trim(),
+        verificationToken,
       },
     });
 
@@ -187,6 +192,12 @@ export async function POST(req: NextRequest) {
         refNumber,
       },
     });
+
+    try {
+      await sendVerificationEmail(email, verificationToken);
+    } catch (emailErr) {
+      console.error("Failed to send verification email:", emailErr);
+    }
 
     return NextResponse.json({
       success: true,
