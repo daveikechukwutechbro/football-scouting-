@@ -1,11 +1,12 @@
 ﻿"use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Loader2, CheckCircle } from "lucide-react";
 import ProgressIndicator from "@/components/ui/ProgressIndicator";
 import Button from "@/components/ui/Button";
-import Step1CreateAccount from "@/components/registration/steps/Step1CreateAccount";
 import Step2PersonalDetails from "@/components/registration/steps/Step2PersonalDetails";
 import Step3Guardian from "@/components/registration/steps/Step3Guardian";
 import Step4FootballProfile from "@/components/registration/steps/Step4FootballProfile";
@@ -22,9 +23,6 @@ import { STEP_NAMES } from "@/lib/constants";
 const STORAGE_KEY = "proscout-registration";
 
 const defaultFormData = {
-  email: "",
-  password: "",
-  confirmPassword: "",
   firstName: "",
   lastName: "",
   dateOfBirth: "",
@@ -188,12 +186,26 @@ function validateStep(
 }
 
 export default function RegisterPage() {
-  const [currentStep, setCurrentStep] = useState(1);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [currentStep, setCurrentStep] = useState(2);
   const [formData, setFormData] = useState<FormData>(defaultFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/signup");
+  }, [status, router]);
+
+  if (status === "loading" || status === "unauthenticated") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   useEffect(() => {
     setFormData(loadFormData());
@@ -206,14 +218,16 @@ export default function RegisterPage() {
   const hasGuardianStep = formData.age > 0 && formData.age < 18;
 
   const visibleSteps = useMemo(() => {
-    const steps = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-    if (hasGuardianStep) steps.splice(2, 0, 3);
+    const steps = [2, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    if (hasGuardianStep) steps.splice(1, 0, 3);
     return steps;
   }, [hasGuardianStep]);
 
   const visibleStepNames = useMemo(() => {
-    if (hasGuardianStep) return [...STEP_NAMES];
-    return STEP_NAMES.filter((_, i) => i !== 2);
+    let names = STEP_NAMES.filter((_, i) => i !== 0);
+    if (hasGuardianStep) names = [...names.slice(0, 1), STEP_NAMES[2], ...names.slice(1)];
+    else names = names.filter((_, i) => i !== 1);
+    return names;
   }, [hasGuardianStep]);
 
   const completedSteps = useMemo(() => {
@@ -319,8 +333,6 @@ export default function RegisterPage() {
   const stepContent = () => {
     const stepProps = { data: formData, updateData, errors };
     switch (currentStep) {
-      case 1:
-        return <Step1CreateAccount {...stepProps} />;
       case 2:
         return <Step2PersonalDetails {...stepProps} />;
       case 3:
@@ -384,7 +396,7 @@ export default function RegisterPage() {
         <div className="hidden sm:block">
           <div className="flex items-center justify-between gap-4">
             <div>
-              {currentStep !== 1 && (
+              {currentStep !== visibleSteps[0] && (
                 <Button variant="ghost" onClick={goToPrevStep} size="lg">
                   <ArrowLeft className="h-4 w-4" /> Back
                 </Button>
@@ -418,7 +430,7 @@ export default function RegisterPage() {
             <Button
               variant="ghost"
               onClick={goToPrevStep}
-              disabled={currentStep === 1}
+              disabled={currentStep === visibleSteps[0]}
               size="md"
             >
               <ArrowLeft className="h-4 w-4" /> Back

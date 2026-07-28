@@ -155,7 +155,7 @@ export default function Hero() {
 
             <div className="flex flex-col sm:flex-row gap-3 mt-10">
               <Link
-                href="/register"
+                href="/signup"
                 className="group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-[14px] font-semibold text-white bg-primary transition-all duration-200 hover:opacity-90"
               >
                 Create Your Profile

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { sendVerificationEmail } from "@/lib/email";
+import { auth } from "@/lib/auth";
 
 function generateRefNumber(): string {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -15,9 +16,24 @@ function generateRefNumber(): string {
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await auth();
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+
+    const existing = await prisma.user.findUnique({ where: { email: session.user.email } });
+    if (!existing) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const playerExists = await prisma.player.findUnique({ where: { userId: existing.id } });
+    if (playerExists) {
+      return NextResponse.json({ error: "Player profile already exists" }, { status: 409 });
+    }
+
     const body = await req.json();
     const {
-      email, password, firstName, lastName, dateOfBirth, nationality,
+      firstName, lastName, dateOfBirth, nationality,
       country, city, phoneNumber,
       guardianName, guardianRelationship, guardianEmail, guardianPhone,
       currentPosition, secondaryPosition, preferredFoot, currentLevel,
@@ -33,36 +49,13 @@ export async function POST(req: NextRequest) {
       socialLinks,
     } = body;
 
-    if (!email || !password) {
-      return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
-    }
-
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-      return NextResponse.json({ error: "Email already registered" }, { status: 409 });
-    }
-
-    const passwordHash = await bcrypt.hash(password, 12);
-
-    const verificationToken = crypto.randomBytes(32).toString("hex");
-
-    const user = await prisma.user.create({
-      data: {
-        email,
-        passwordHash,
-        role: "player",
-        name: `${firstName || ""} ${lastName || ""}`.trim(),
-        verificationToken,
-      },
-    });
-
     const age = dateOfBirth
       ? Math.floor((Date.now() - new Date(dateOfBirth).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
       : 0;
 
     const player = await prisma.player.create({
       data: {
-        userId: user.id,
+        userId: existing.id,
         firstName: firstName || "",
         lastName: lastName || "",
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : new Date(),
@@ -192,12 +185,6 @@ export async function POST(req: NextRequest) {
         refNumber,
       },
     });
-
-    try {
-      await sendVerificationEmail(email, verificationToken);
-    } catch (emailErr) {
-      console.error("Failed to send verification email:", emailErr);
-    }
 
     return NextResponse.json({
       success: true,

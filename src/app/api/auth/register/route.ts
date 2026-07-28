@@ -1,14 +1,20 @@
+import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { email, password, firstName, lastName, dateOfBirth, nationality, country, city, phoneNumber } = body;
+    const { email, password } = body;
 
     if (!email || !password) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
+    }
+
+    if (password.length < 8) {
+      return NextResponse.json({ error: "Password must be at least 8 characters" }, { status: 400 });
     }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -17,32 +23,24 @@ export async function POST(req: NextRequest) {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
+    const verificationToken = crypto.randomBytes(32).toString("hex");
 
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         email,
         passwordHash,
         role: "player",
-        name: `${firstName || ""} ${lastName || ""}`.trim(),
+        verificationToken,
       },
     });
 
-    if (firstName && lastName) {
-      await prisma.player.create({
-        data: {
-          userId: user.id,
-          firstName,
-          lastName,
-          dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : new Date(),
-          nationality: nationality || "",
-          countryOfResidence: country || "",
-          city: city || "",
-          phoneNumber: phoneNumber || "",
-        },
-      });
+    try {
+      await sendVerificationEmail(email, verificationToken);
+    } catch (emailErr) {
+      console.error("Failed to send verification email:", emailErr);
     }
 
-    return NextResponse.json({ success: true, userId: user.id }, { status: 201 });
+    return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

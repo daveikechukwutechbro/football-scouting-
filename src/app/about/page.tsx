@@ -41,7 +41,7 @@ export default function AboutPage() {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-foreground">Ready to get started?</h2>
           <p className="mt-4 text-base text-muted">Join ProScout today and put your talent in front of the people who matter.</p>
-          <Link href="/register" className="inline-flex items-center gap-2 mt-8 px-8 py-3.5 rounded-xl text-sm font-semibold text-white bg-primary hover:bg-primary-hover transition-colors">
+          <Link href="/signup" className="inline-flex items-center gap-2 mt-8 px-8 py-3.5 rounded-xl text-sm font-semibold text-white bg-primary hover:bg-primary-hover transition-colors">
             Create Your Profile <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

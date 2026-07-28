@@ -104,7 +104,7 @@ export default function Header() {
                 Log In
               </Link>
               <Link
-                href="/register"
+                href="/signup"
                 className="rounded-lg bg-primary px-5 py-2.5 text-[13px] font-semibold text-white transition-all duration-200 hover:bg-primary/90"
               >
                 Register Free
@@ -178,7 +178,7 @@ export default function Header() {
                 Log In
               </Link>
               <Link
-                href="/register"
+                href="/signup"
                 onClick={() => setMobileOpen(false)}
                 className="rounded-lg bg-primary px-5 py-3 text-center text-[14px] font-semibold text-white transition-all duration-200 hover:bg-primary/90"
               >

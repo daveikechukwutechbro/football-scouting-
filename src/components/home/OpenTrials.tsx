@@ -48,7 +48,7 @@ export default function OpenTrials() {
               </div>
               <div className="flex items-center justify-between pt-4 border-t border-border dark:border-border">
                 <span className="text-[11px] text-muted">Deadline: {trial.deadline}</span>
-                <Link href="/register" className="inline-flex items-center gap-1 text-[12px] font-medium text-primary transition-colors hover:opacity-80">
+                <Link href="/signup" className="inline-flex items-center gap-1 text-[12px] font-medium text-primary transition-colors hover:opacity-80">
                   Apply <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>

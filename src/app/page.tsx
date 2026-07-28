@@ -27,7 +27,7 @@ export default function Home() {
           </p>
           <div className="mt-8">
             <Link
-              href="/register"
+              href="/signup"
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg text-[14px] font-semibold text-white bg-primary transition-all duration-200 hover:opacity-90"
             >
               Get Started Free

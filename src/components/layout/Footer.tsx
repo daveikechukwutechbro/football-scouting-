@@ -3,7 +3,7 @@ import Link from "next/link";
 const PLATFORM_LINKS = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/register", label: "Register" },
+  { href: "/signup", label: "Register" },
   { href: "/login", label: "Login" },
   { href: "/contact", label: "Contact" },
 ];
