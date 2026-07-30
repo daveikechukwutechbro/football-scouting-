@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(new URL("/?error=missing-token", req.url));
     }
 
-    const user = await prisma.user.findUnique({ where: { verificationToken: token } });
+    const user = await prisma.user.findFirst({ where: { verificationToken: token } });
     if (!user) {
       return NextResponse.redirect(new URL("/?error=invalid-token", req.url));
     }
