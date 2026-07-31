@@ -26,7 +26,7 @@ function getApp(): App {
 
   app = initializeApp({
     credential: cert(serviceAccount),
-    databaseURL: process.env.FIREBASE_DATABASE_URL || `https://${serviceAccount.project_id}-default-rtdb.firebaseio.com`,
+    databaseURL: process.env.FIREBASE_DATABASE_URL || `https://${serviceAccount.project_id}-default-rtdb.europe-west1.firebasedatabase.app`,
   });
   return app;
 }
