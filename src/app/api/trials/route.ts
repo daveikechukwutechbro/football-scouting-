@@ -24,7 +24,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const doc = await getAdminDb().collection("trials").add({
+    const docRef = getAdminDb().ref("trials").push();
+    await docRef.set({
       title,
       location,
       date,
@@ -35,7 +36,7 @@ export async function POST(req: NextRequest) {
       createdAt: new Date().toISOString(),
     });
 
-    return NextResponse.json({ id: doc.id, ...body }, { status: 201 });
+    return NextResponse.json({ id: docRef.key, ...body }, { status: 201 });
   } catch (error) {
     console.error("Error creating trial:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

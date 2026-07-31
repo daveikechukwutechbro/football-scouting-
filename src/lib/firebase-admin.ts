@@ -1,10 +1,10 @@
 import { initializeApp, getApps, cert, type App } from "firebase-admin/app";
 import { getAuth, type Auth } from "firebase-admin/auth";
-import { getFirestore, type Firestore } from "firebase-admin/firestore";
+import { getDatabase, type Database } from "firebase-admin/database";
 
 let app: App | null = null;
 let authInstance: Auth | null = null;
-let dbInstance: Firestore | null = null;
+let dbInstance: Database | null = null;
 
 function getApp(): App {
   if (app) return app;
@@ -24,7 +24,10 @@ function getApp(): App {
         client_email: process.env.FIREBASE_CLIENT_EMAIL || "",
       };
 
-  app = initializeApp({ credential: cert(serviceAccount) });
+  app = initializeApp({
+    credential: cert(serviceAccount),
+    databaseURL: process.env.FIREBASE_DATABASE_URL || `https://${serviceAccount.project_id}-default-rtdb.firebaseio.com`,
+  });
   return app;
 }
 
@@ -33,7 +36,7 @@ export function getAdminAuth(): Auth {
   return authInstance;
 }
 
-export function getAdminDb(): Firestore {
-  if (!dbInstance) dbInstance = getFirestore(getApp());
+export function getAdminDb(): Database {
+  if (!dbInstance) dbInstance = getDatabase(getApp());
   return dbInstance;
 }

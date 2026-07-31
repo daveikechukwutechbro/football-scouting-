@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb } from "@/lib/firebase-admin";
 import { verifyAdmin, unauthorized } from "@/lib/admin-auth";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const snapshot = await getAdminDb().collection("players").get();
-    const players = snapshot.docs.map((doc) => doc.data() as any);
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorized();
+
+    const snapshot = await getAdminDb().ref("players").get();
+    const data = snapshot.val() || {};
+    const players = Object.values(data) as any[];
 
     const totalPlayers = players.length;
     const totalApplications = players.filter((p) => p.refNumber).length;

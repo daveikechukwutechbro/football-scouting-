@@ -19,10 +19,9 @@ export async function PATCH(
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     }
 
-    await getAdminDb().collection("players").doc(id).update({
-      status,
-      "applications.0.status": status,
-    });
+    const db = getAdminDb();
+    await db.ref(`players/${id}/status`).set(status);
+    await db.ref(`players/${id}/applications/0/status`).set(status);
 
     return NextResponse.json({ success: true });
   } catch (error) {

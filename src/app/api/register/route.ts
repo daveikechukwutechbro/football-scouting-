@@ -21,9 +21,10 @@ export async function POST(req: NextRequest) {
     catch { return NextResponse.json({ error: "Invalid token" }, { status: 401 }); }
 
     const uid = decoded.uid;
+    const db = getAdminDb();
 
-    const existingDoc = await getAdminDb().collection("players").doc(uid).get();
-    if (existingDoc.exists) {
+    const existing = await db.ref(`players/${uid}`).get();
+    if (existing.exists()) {
       return NextResponse.json({ error: "Player profile already exists" }, { status: 409 });
     }
 
@@ -107,7 +108,7 @@ export async function POST(req: NextRequest) {
     const documents = body.documents || [];
     const media = body.videos && body.videos.length > 0 ? { videos: JSON.stringify(body.videos) } : null;
 
-    await getAdminDb().collection("players").doc(uid).set({
+    await db.ref(`players/${uid}`).set({
       uid,
       email: decoded.email,
       user: { email: decoded.email, createdAt: now },

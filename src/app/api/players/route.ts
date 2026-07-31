@@ -14,8 +14,9 @@ export async function GET(req: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10) || 1);
     const limit = Math.max(1, parseInt(searchParams.get("limit") || "20", 10) || 20);
 
-    const snapshot = await getAdminDb().collection("players").get();
-    let players = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const snapshot = await getAdminDb().ref("players").get();
+    const data = snapshot.val() || {};
+    let players = Object.entries(data).map(([id, value]) => ({ id, ...(value as object) }));
 
     if (search) {
       const q = search.toLowerCase();

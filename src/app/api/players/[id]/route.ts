@@ -11,12 +11,12 @@ export async function GET(
     if (!admin) return unauthorized();
 
     const { id } = await params;
-    const doc = await getAdminDb().collection("players").doc(id).get();
-    if (!doc.exists) {
+    const snapshot = await getAdminDb().ref(`players/${id}`).get();
+    if (!snapshot.exists()) {
       return NextResponse.json({ error: "Player not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ id: doc.id, ...doc.data() });
+    return NextResponse.json({ id, ...snapshot.val() });
   } catch (error) {
     console.error("Error fetching player:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
@@ -35,9 +35,7 @@ export async function PUT(
     const body = await req.json();
 
     if (body.notes !== undefined) {
-      await getAdminDb().collection("players").doc(id).update({
-        "applications.0.notes": body.notes,
-      });
+      await getAdminDb().ref(`players/${id}/applications/0/notes`).set(body.notes);
     }
 
     return NextResponse.json({ success: true });
@@ -56,7 +54,7 @@ export async function DELETE(
     if (!admin) return unauthorized();
 
     const { id } = await params;
-    await getAdminDb().collection("players").doc(id).delete();
+    await getAdminDb().ref(`players/${id}`).remove();
 
     return NextResponse.json({ success: true });
   } catch (error) {
