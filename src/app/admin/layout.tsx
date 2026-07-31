@@ -1,15 +1,37 @@
 "use client";
 
-import { useState } from "react";
-import { Menu } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, Loader2 } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
+import { useAuth } from "@/lib/useAuth";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "infoproscoutt@gmail.com";
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (pathname === "/admin/login") return;
+    if (!loading) {
+      if (!user || user.email !== ADMIN_EMAIL) {
+        router.push("/admin/login");
+      }
+    }
+  }, [user, loading, router, pathname]);
+
+  if (pathname === "/admin/login") return <>{children}</>;
+
+  if (loading || !user || user.email !== ADMIN_EMAIL) {
+    return (
+      <div className="min-h-screen bg-[#0F1419] flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-white" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0F1419]">
@@ -31,9 +53,7 @@ export default function AdminLayout({
           </div>
         </header>
 
-        <main className="p-4 lg:p-8">
-          {children}
-        </main>
+        <main className="p-4 lg:p-8">{children}</main>
       </div>
     </div>
   );

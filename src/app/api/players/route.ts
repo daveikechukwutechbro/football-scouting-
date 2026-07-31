@@ -1,66 +1,50 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getAdminDb } from "@/lib/firebase-admin";
+import { verifyAdmin, unauthorized } from "@/lib/admin-auth";
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user || (session.user as any).role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorized();
 
     const { searchParams } = new URL(req.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "20");
     const search = searchParams.get("search") || "";
     const status = searchParams.get("status") || "";
     const position = searchParams.get("position") || "";
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10) || 1);
+    const limit = Math.max(1, parseInt(searchParams.get("limit") || "20", 10) || 20);
 
-    const where: any = {};
+    const snapshot = await getAdminDb().collection("players").get();
+    let players = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
     if (search) {
-      where.OR = [
-        { firstName: { contains: search } },
-        { lastName: { contains: search } },
-        { user: { email: { contains: search } } },
-        { city: { contains: search } },
-      ];
-    }
-
-    if (position) {
-      where.footballProfile = { primaryPosition: position };
+      const q = search.toLowerCase();
+      players = players.filter(
+        (p: any) =>
+          (p.firstName || "").toLowerCase().includes(q) ||
+          (p.lastName || "").toLowerCase().includes(q) ||
+          (p.email || "").toLowerCase().includes(q) ||
+          (p.city || "").toLowerCase().includes(q) ||
+          (p.nationality || "").toLowerCase().includes(q)
+      );
     }
 
     if (status) {
-      where.applications = { some: { status } };
+      players = players.filter((p: any) => (p.status || "submitted") === status);
     }
 
-    const [players, total] = await Promise.all([
-      prisma.player.findMany({
-        where,
-        include: {
-          user: { select: { email: true } },
-          footballProfile: true,
-          physicalProfile: true,
-          careerStats: true,
-          applications: { orderBy: { submittedAt: "desc" }, take: 1 },
-        },
-        skip: (page - 1) * limit,
-        take: limit,
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.player.count({ where }),
-    ]);
+    if (position) {
+      players = players.filter((p: any) => p.footballProfile?.primaryPosition === position);
+    }
 
-    return NextResponse.json({
-      players,
-      pagination: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
-    });
+    players.sort((a: any, b: any) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+
+    const total = players.length;
+    const totalPages = Math.max(1, Math.ceil(total / limit));
+    const start = (page - 1) * limit;
+    const paged = players.slice(start, start + limit);
+
+    return NextResponse.json({ players: paged, pagination: { total, page, limit, totalPages } });
   } catch (error) {
     console.error("Error fetching players:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

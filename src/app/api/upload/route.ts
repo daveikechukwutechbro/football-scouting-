@@ -1,36 +1,33 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import path from "path";
-import { auth } from "@/lib/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { getAdminAuth } from "@/lib/firebase-admin";
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user) {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    try { await getAdminAuth().verifyIdToken(authHeader.slice(7)); }
+    catch { return NextResponse.json({ error: "Invalid token" }, { status: 401 }); }
 
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
-    const folder = (formData.get("folder") as string) || "uploads";
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const bytes = Buffer.from(await file.arrayBuffer());
+    const ext = (file.name.split(".").pop() || "bin").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${ext}`;
 
-    const ext = path.extname(file.name);
-    const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}${ext}`;
-    const uploadDir = path.join(process.cwd(), "public", folder);
-    const filepath = path.join(uploadDir, filename);
+    const dir = path.join(process.cwd(), "public", "uploads");
+    await mkdir(dir, { recursive: true });
+    await writeFile(path.join(dir, filename), bytes);
 
-    await writeFile(filepath, buffer);
-
-    const url = `/${folder}/${filename}`;
-
+    const url = `/uploads/${filename}`;
     return NextResponse.json({ success: true, url, filename: file.name });
   } catch (error) {
     console.error("Upload error:", error);

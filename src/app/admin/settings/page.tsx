@@ -1,11 +1,11 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/lib/useAuth";
 import Card from "@/components/ui/Card";
 import { User, Mail, Shield } from "lucide-react";
 
 export default function AdminSettingsPage() {
-  const { data: session } = useSession();
+  const { user } = useAuth();
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -20,8 +20,8 @@ export default function AdminSettingsPage() {
             <User className="h-6 w-6 text-[#0D7B3E]" />
           </div>
           <div>
-            <h3 className="text-white font-semibold">{(session?.user as any)?.name || "Admin"}</h3>
-            <p className="text-sm text-gray-400">{session?.user?.email}</p>
+            <h3 className="text-white font-semibold">{user?.displayName || "Admin"}</h3>
+            <p className="text-sm text-gray-400">{user?.email}</p>
           </div>
         </div>
 
@@ -30,14 +30,14 @@ export default function AdminSettingsPage() {
             <Mail className="h-4 w-4 text-gray-400" />
             <div>
               <p className="text-xs text-gray-500">Email</p>
-              <p className="text-sm text-white">{session?.user?.email}</p>
+              <p className="text-sm text-white">{user?.email}</p>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 rounded-xl bg-[#232838] border border-gray-700">
             <Shield className="h-4 w-4 text-gray-400" />
             <div>
               <p className="text-xs text-gray-500">Role</p>
-              <p className="text-sm text-white capitalize">{(session?.user as any)?.role || "admin"}</p>
+              <p className="text-sm text-white">admin</p>
             </div>
           </div>
         </div>

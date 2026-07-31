@@ -1,10 +1,10 @@
 ﻿"use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Loader2, CheckCircle } from "lucide-react";
+import { useAuth } from "@/lib/useAuth";
 import ProgressIndicator from "@/components/ui/ProgressIndicator";
 import Button from "@/components/ui/Button";
 import Step2PersonalDetails from "@/components/registration/steps/Step2PersonalDetails";
@@ -174,7 +174,7 @@ function validateStep(
 }
 
 export default function RegisterPage() {
-  const { data: session, status } = useSession();
+  const { user, loading } = useAuth();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
   const [formData, setFormData] = useState<FormData>(defaultFormData);
@@ -184,10 +184,10 @@ export default function RegisterPage() {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    if (status === "unauthenticated") router.push("/signup");
-  }, [status, router]);
+    if (!loading && !user) router.push("/signup");
+  }, [user, loading, router]);
 
-  if (status === "loading" || status === "unauthenticated") {
+  if (loading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -264,9 +264,10 @@ export default function RegisterPage() {
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
     try {
+      const token = await user!.getIdToken();
       const res = await fetch("/api/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(formData),
       });
       const result = await res.json();
@@ -288,7 +289,7 @@ export default function RegisterPage() {
       });
       setIsSubmitting(false);
     }
-  }, [formData]);
+  }, [formData, user]);
 
   if (!hydrated) {
     return (

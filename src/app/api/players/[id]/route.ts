@@ -1,40 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getAdminDb } from "@/lib/firebase-admin";
+import { verifyAdmin, unauthorized } from "@/lib/admin-auth";
 
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user || (session.user as any).role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorized();
 
     const { id } = await params;
-    const player = await prisma.player.findUnique({
-      where: { id },
-      include: {
-        user: { select: { email: true, createdAt: true } },
-        guardian: true,
-        footballProfile: true,
-        physicalProfile: true,
-        careerStats: true,
-        playingStyle: true,
-        media: true,
-        availability: true,
-        socialLinks: true,
-        documents: true,
-        applications: { orderBy: { submittedAt: "desc" } },
-      },
-    });
-
-    if (!player) {
+    const doc = await getAdminDb().collection("players").doc(id).get();
+    if (!doc.exists) {
       return NextResponse.json({ error: "Player not found" }, { status: 404 });
     }
 
-    return NextResponse.json(player);
+    return NextResponse.json({ id: doc.id, ...doc.data() });
   } catch (error) {
     console.error("Error fetching player:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
@@ -46,26 +28,16 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user || (session.user as any).role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorized();
 
     const { id } = await params;
     const body = await req.json();
-    const { notes, ...playerData } = body;
 
-    if (notes !== undefined) {
-      const application = await prisma.application.findFirst({
-        where: { playerId: id },
-        orderBy: { submittedAt: "desc" },
+    if (body.notes !== undefined) {
+      await getAdminDb().collection("players").doc(id).update({
+        "applications.0.notes": body.notes,
       });
-      if (application) {
-        await prisma.application.update({
-          where: { id: application.id },
-          data: { notes },
-        });
-      }
     }
 
     return NextResponse.json({ success: true });
@@ -80,18 +52,11 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user || (session.user as any).role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const admin = await verifyAdmin(req);
+    if (!admin) return unauthorized();
 
     const { id } = await params;
-    const player = await prisma.player.findUnique({ where: { id } });
-    if (!player) {
-      return NextResponse.json({ error: "Player not found" }, { status: 404 });
-    }
-
-    await prisma.user.delete({ where: { id: player.userId } });
+    await getAdminDb().collection("players").doc(id).delete();
 
     return NextResponse.json({ success: true });
   } catch (error) {

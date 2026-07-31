@@ -1,6 +1,8 @@
 ﻿"use client";
 
 import { useState } from "react";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import Link from "next/link";
 import { ArrowLeft, Mail, CheckCircle, AlertCircle } from "lucide-react";
 
@@ -14,11 +16,10 @@ export default function ForgotPasswordPage() {
     setStatus("sending");
     setError("");
     try {
-      const res = await fetch("/api/auth/forgot-password", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
-      if (!res.ok) throw new Error("Failed");
+      await sendPasswordResetEmail(auth, email);
       setStatus("sent");
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err: any) {
+      setError(err.code === "auth/user-not-found" ? "No account found with this email" : "Something went wrong. Try again.");
       setStatus("idle");
     }
   };

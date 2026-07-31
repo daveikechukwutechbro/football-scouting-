@@ -1,56 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getAdminDb } from "@/lib/firebase-admin";
+import { verifyAdmin, unauthorized } from "@/lib/admin-auth";
 
 export async function GET() {
   try {
-    const [
-      totalPlayers,
-      totalApplications,
-      statusCounts,
-      positionCounts,
-      recentApplications,
-    ] = await Promise.all([
-      prisma.player.count(),
-      prisma.application.count(),
-      prisma.application.groupBy({
-        by: ["status"],
-        _count: true,
-      }),
-      prisma.footballProfile.groupBy({
-        by: ["primaryPosition"],
-        _count: true,
-        orderBy: { _count: { primaryPosition: "desc" } },
-        take: 11,
-      }),
-      prisma.application.findMany({
-        take: 10,
-        orderBy: { submittedAt: "desc" },
-        include: {
-          player: {
-            select: { firstName: true, lastName: true, city: true, nationality: true },
-          },
-        },
-      }),
-    ]);
+    const snapshot = await getAdminDb().collection("players").get();
+    const players = snapshot.docs.map((doc) => doc.data() as any);
 
-    const statusMap: Record<string, number> = {};
-    statusCounts.forEach((s) => {
-      statusMap[s.status] = s._count;
+    const totalPlayers = players.length;
+    const totalApplications = players.filter((p) => p.refNumber).length;
+    const statusCounts: Record<string, number> = {};
+    const positionCounts: Record<string, number> = {};
+
+    players.forEach((p) => {
+      const st = p.status || "submitted";
+      statusCounts[st] = (statusCounts[st] || 0) + 1;
+      const pos = p.footballProfile?.primaryPosition || p.primaryPosition || p.currentPosition;
+      if (pos) positionCounts[pos] = (positionCounts[pos] || 0) + 1;
     });
 
-    const positionMap: { position: string; count: number }[] = [];
-    positionCounts.forEach((p) => {
-      positionMap.push({
-        position: p.primaryPosition,
-        count: p._count,
-      });
-    });
+    const recentApplications = players
+      .sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""))
+      .slice(0, 10)
+      .map((p) => ({
+        id: p.uid || "",
+        status: p.status || "submitted",
+        submittedAt: p.createdAt || "",
+        player: { firstName: p.firstName, lastName: p.lastName, city: p.city, nationality: p.nationality },
+      }));
 
     return NextResponse.json({
       totalPlayers,
       totalApplications,
-      statusCounts: statusMap,
-      positionCounts: positionMap,
+      statusCounts,
+      positionCounts,
       recentApplications,
     });
   } catch (error) {
