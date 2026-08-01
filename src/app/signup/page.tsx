@@ -27,7 +27,10 @@ export default function SignupPage() {
     setLoading(true);
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
-      await sendEmailVerification(cred.user);
+      await sendEmailVerification(cred.user, {
+        url: `${window.location.origin}/email-verified`,
+        handleCodeInApp: true,
+      });
       await auth.signOut();
       router.push("/check-email");
     } catch (err: any) {
@@ -42,8 +45,11 @@ export default function SignupPage() {
     setLoading(true);
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      router.push("/register");
+      const cred = await signInWithPopup(auth, provider);
+      const token = await cred.user.getIdToken();
+      const res = await fetch("/api/me", { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      router.push(data.registered ? "/" : "/register");
     } catch (err: any) {
       if (err.code !== "auth/popup-closed-by-user") setError(err.message || "Google sign-in failed");
     }

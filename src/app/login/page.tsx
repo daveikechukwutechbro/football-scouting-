@@ -14,6 +14,21 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  async function redirectAfterLogin(user: any) {
+    try {
+      const token = await user.getIdToken();
+      const res = await fetch("/api/me", { headers: { Authorization: `Bearer ${token}` } });
+      if (res.ok) {
+        const data = await res.json();
+        router.push(data.registered ? "/" : "/register");
+      } else {
+        router.push("/register");
+      }
+    } catch {
+      router.push("/register");
+    }
+  }
+
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(""); setLoading(true);
@@ -25,7 +40,7 @@ export default function LoginPage() {
         setLoading(false);
         return;
       }
-      router.push("/");
+      await redirectAfterLogin(cred.user);
     } catch (err: any) {
       if (err.code === "auth/user-not-found" || err.code === "auth/wrong-password" || err.code === "auth/invalid-credential")
         setError("Invalid email or password");
@@ -39,8 +54,8 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      await signInWithPopup(auth, new GoogleAuthProvider());
-      router.push("/");
+      const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+      await redirectAfterLogin(cred.user);
     } catch (err: any) {
       if (err.code !== "auth/popup-closed-by-user") setError(err.message || "Google sign-in failed");
     }
@@ -51,10 +66,15 @@ export default function LoginPage() {
     if (!email.trim()) { setError("Enter your email first"); return; }
     setLoading(true);
     try {
-      await sendEmailVerification(auth.currentUser!);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      await sendEmailVerification(cred.user, {
+        url: `${window.location.origin}/email-verified`,
+        handleCodeInApp: true,
+      });
+      await auth.signOut();
       setError("");
       alert("Verification email sent! Check your inbox.");
-    } catch { setError("Failed to resend. Sign in first."); }
+    } catch { setError("Failed to resend. Check your credentials."); }
     setLoading(false);
   };
 
