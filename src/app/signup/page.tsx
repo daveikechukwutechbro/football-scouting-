@@ -49,7 +49,7 @@ export default function SignupPage() {
       const token = await cred.user.getIdToken();
       const res = await fetch("/api/me", { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
-      router.push(data.registered ? "/" : "/register");
+      router.push(data.registered ? "/dashboard" : "/register");
     } catch (err: any) {
       if (err.code !== "auth/popup-closed-by-user") setError(err.message || "Google sign-in failed");
     }

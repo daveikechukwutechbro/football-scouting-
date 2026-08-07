@@ -1,13 +1,6 @@
-import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminAuth, getAdminDb } from "@/lib/firebase-admin";
-
-function generateRefNumber(): string {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let result = "PS-";
-  for (let i = 0; i < 8; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
-  return result;
-}
+import { getAdminAuth } from "@/lib/firebase-admin";
+import { createPlayer } from "@/lib/player";
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,122 +13,20 @@ export async function POST(req: NextRequest) {
     try { decoded = await getAdminAuth().verifyIdToken(token); }
     catch { return NextResponse.json({ error: "Invalid token" }, { status: 401 }); }
 
-    const uid = decoded.uid;
-    const db = getAdminDb();
-
-    const existing = await db.ref(`players/${uid}`).get();
-    if (existing.exists()) {
-      return NextResponse.json({ error: "Player profile already exists" }, { status: 409 });
-    }
-
     const body = await req.json();
 
-    const age = body.dateOfBirth
-      ? Math.floor((Date.now() - new Date(body.dateOfBirth).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
-      : 0;
+    if (!body.payment?.transactionId) {
+      return NextResponse.json(
+        { error: "Payment required before registration" },
+        { status: 402 }
+      );
+    }
 
-    const refNumber = generateRefNumber();
-    const now = new Date().toISOString();
-    const status = "submitted";
-
-    const guardian =
-      body.guardianName || body.guardianEmail || body.guardianPhone
-        ? {
-            name: body.guardianName || "",
-            relationship: body.guardianRelationship || "",
-            email: body.guardianEmail || "",
-            phone: body.guardianPhone || "",
-          }
-        : null;
-
-    const footballProfile = {
-      primaryPosition: body.currentPosition || "",
-      secondaryPosition: body.secondaryPosition || null,
-      preferredFoot: body.preferredFoot || "",
-      currentLevel: body.currentLevel || "",
-      contractStatus: body.contractStatus || "",
-      currentClub: body.currentClub || null,
-      yearsExperience: body.yearsExperience ? Number(body.yearsExperience) : null,
-      previousClubs: body.previousClubs || null,
-    };
-
-    const physicalProfile = {
-      heightCm: body.height ? Number(body.height) : 0,
-      weightKg: body.weight ? Number(body.weight) : 0,
-      bodyType: body.bodyType || null,
-      fitnessLevel: body.fitnessLevel || null,
-      injuries: body.injuries || null,
-    };
-
-    const careerStats = {
-      totalAppearances: body.totalAppearances ? Number(body.totalAppearances) : 0,
-      totalGoals: body.totalGoals ? Number(body.totalGoals) : 0,
-      totalAssists: body.totalAssists ? Number(body.totalAssists) : 0,
-      cleanSheets: body.cleanSheets ? Number(body.cleanSheets) : null,
-      yellowCards: body.yellowCards ? Number(body.yellowCards) : null,
-      redCards: body.redCards ? Number(body.redCards) : null,
-    };
-
-    const playingStyle =
-      body.playingStyle || body.strengths || body.biography
-        ? {
-            biography: body.biography || null,
-            playingStyle: body.playingStyle || "",
-            strengths: body.strengths || "",
-            weaknesses: body.weaknesses || null,
-            favoritePosition: body.favoritePosition || null,
-            favoritePlayer: body.favoritePlayer || null,
-            careerGoal: body.careerGoal || null,
-            motivation: body.motivation || null,
-          }
-        : null;
-
-    const availability =
-      body.availableForTrials !== null || body.preferredCommunication
-        ? {
-            availableForTrials: body.availableForTrials ?? false,
-            availableImmediately: body.availableImmediately ?? false,
-            canTravel: body.canTravel ?? false,
-            canRelocate: body.canRelocate ?? false,
-            preferredCountry: body.preferredCountry || null,
-            preferredLeague: body.preferredLeague || null,
-            preferredTrialDates: body.preferredTrialDates || null,
-            preferredCommunication: body.preferredCommunication || "",
-          }
-        : null;
-
-    const socialLinks = body.socialLinks || null;
-    const documents = body.documents || [];
-    const media = body.videos && body.videos.length > 0 ? { videos: JSON.stringify(body.videos) } : null;
-
-    await db.ref(`players/${uid}`).set({
-      uid,
-      email: decoded.email,
-      user: { email: decoded.email, createdAt: now },
-      firstName: body.firstName || "",
-      lastName: body.lastName || "",
-      dateOfBirth: body.dateOfBirth || "",
-      nationality: body.nationality || "",
-      countryOfResidence: body.country || "",
-      city: body.city || "",
-      phoneNumber: body.phoneNumber || "",
-      age,
-      refNumber,
-      status,
-      createdAt: now,
-      guardian,
-      footballProfile,
-      physicalProfile,
-      careerStats,
-      playingStyle,
-      availability,
-      socialLinks,
-      documents,
-      media,
-      applications: [{ id: refNumber, status, refNumber, notes: null, submittedAt: now }],
-    });
-
-    return NextResponse.json({ success: true, refNumber }, { status: 201 });
+    const result = await createPlayer(decoded.uid, decoded.email || "", body);
+    if (result.status === 409) {
+      return NextResponse.json({ error: result.error }, { status: 409 });
+    }
+    return NextResponse.json({ success: true, refNumber: result.refNumber }, { status: 201 });
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

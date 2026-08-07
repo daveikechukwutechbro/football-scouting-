@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   ArrowLeft, User, Shirt, Ruler, BarChart3, Video, FileText, Calendar,
   Globe, MapPin, Save, Loader2, CheckCircle, XCircle, Clock, Star,
-  Shield, GraduationCap, Heart, FolderOpen, ExternalLink,
+  Shield, GraduationCap, Heart, FolderOpen, ExternalLink, CreditCard,
 } from "lucide-react";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
@@ -52,6 +52,7 @@ interface PlayerDetail {
   } | null;
   documents: { id: string; documentType: string; fileUrl: string; originalFilename: string }[];
   applications: { id: string; status: string; refNumber: string; notes: string | null; submittedAt: string }[];
+  payment: { status: string; transactionId: string; amount: number; currency: string; paidAt: string } | null;
 }
 
 const STATUS_OPTIONS = [
@@ -208,6 +209,12 @@ export default function AdminPlayerDetailPage({ params }: { params: Promise<{ id
         <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${STATUS_COLORS[currentStatus] || ""}`}>
           {formatStatus(currentStatus)}
         </span>
+        {player.payment?.status === "paid" && (
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border bg-[#0D7B3E]/10 text-[#0D7B3E] border-[#0D7B3E]/20">
+            <CreditCard className="h-4 w-4" />
+            Paid ${player.payment.amount ?? "5"}.00
+          </span>
+        )}
       </div>
 
       <Card padding="lg">

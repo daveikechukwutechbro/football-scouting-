@@ -20,6 +20,7 @@ interface Player {
   physicalProfile: { heightCm: number; weightKg: number } | null;
   careerStats: { totalGoals: number; totalAppearances: number } | null;
   applications: { status: string; refNumber: string }[];
+  payment: { status: string } | null;
 }
 
 const STATUS_OPTIONS = [
@@ -162,6 +163,7 @@ export default function AdminPlayersPage() {
                   <th className="text-left text-xs font-medium text-gray-500 uppercase px-6 py-4">Position</th>
                   <th className="text-left text-xs font-medium text-gray-500 uppercase px-6 py-4">Level</th>
                   <th className="text-left text-xs font-medium text-gray-500 uppercase px-6 py-4">Status</th>
+                  <th className="text-left text-xs font-medium text-gray-500 uppercase px-6 py-4">Payment</th>
                   <th className="text-left text-xs font-medium text-gray-500 uppercase px-6 py-4">Registered</th>
                   <th className="text-right text-xs font-medium text-gray-500 uppercase px-6 py-4">Actions</th>
                 </tr>
@@ -190,6 +192,17 @@ export default function AdminPlayersPage() {
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[appStatus] || "bg-gray-800 text-gray-400"}`}>
                           {formatStatus(appStatus)}
                         </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        {player.payment?.status === "paid" ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#0D7B3E]/10 text-[#0D7B3E]">
+                            Paid
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-800 text-gray-500">
+                            Unpaid
+                          </span>
+                        )}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-400">
                         {new Date(player.createdAt).toLocaleDateString()}

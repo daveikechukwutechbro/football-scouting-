@@ -20,7 +20,7 @@ export default function LoginPage() {
       const res = await fetch("/api/me", { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) {
         const data = await res.json();
-        router.push(data.registered ? "/" : "/register");
+        router.push(data.registered ? "/dashboard" : "/register");
       } else {
         router.push("/register");
       }

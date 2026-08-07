@@ -23,14 +23,14 @@ export default function Home() {
             Ready to take the next step?
           </h2>
           <p className="mt-4 text-[15px] leading-relaxed max-w-[480px] mx-auto text-muted">
-            Join thousands of players using ProScout to advance their careers. Free registration takes less than two minutes.
+            Join thousands of players using ProScout to advance their careers. Registration takes less than two minutes.
           </p>
           <div className="mt-8">
             <Link
               href="/signup"
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg text-[14px] font-semibold text-white bg-primary transition-all duration-200 hover:opacity-90"
             >
-              Get Started Free
+              Get Started
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

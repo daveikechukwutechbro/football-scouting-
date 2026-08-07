@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, LayoutDashboard } from "lucide-react";
+import { useAuth } from "@/lib/useAuth";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -18,6 +19,7 @@ const NAV_LINKS = [
 export default function Header() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
+  const { user, loading: authLoading } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -97,18 +99,30 @@ export default function Header() {
                   <Moon className="h-4 w-4" />
                 )}
               </button>
-              <Link
-                href="/login"
-                className="rounded-lg px-4 py-2 text-[13px] font-medium text-muted transition-colors hover:text-foreground dark:text-muted dark:hover:text-foreground"
-              >
-                Log In
-              </Link>
-              <Link
-                href="/signup"
-                className="rounded-lg bg-primary px-5 py-2.5 text-[13px] font-semibold text-white transition-all duration-200 hover:bg-primary/90"
-              >
-                Register Free
-              </Link>
+              {authLoading ? null : user ? (
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-[13px] font-semibold text-white transition-all duration-200 hover:bg-primary/90"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="rounded-lg px-4 py-2 text-[13px] font-medium text-muted transition-colors hover:text-foreground dark:text-muted dark:hover:text-foreground"
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="rounded-lg bg-primary px-5 py-2.5 text-[13px] font-semibold text-white transition-all duration-200 hover:bg-primary/90"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
 
             <div className="flex items-center gap-2 lg:hidden">
@@ -170,20 +184,33 @@ export default function Header() {
               })}
             </nav>
             <div className="flex flex-col gap-3 border-t border-border px-4 py-4 dark:border-border">
-              <Link
-                href="/login"
-                onClick={() => setMobileOpen(false)}
-                className="rounded-lg border border-border px-5 py-3 text-center text-[14px] font-medium text-foreground transition-colors hover:bg-surface dark:border-border dark:text-foreground dark:hover:bg-surface"
-              >
-                Log In
-              </Link>
-              <Link
-                href="/signup"
-                onClick={() => setMobileOpen(false)}
-                className="rounded-lg bg-primary px-5 py-3 text-center text-[14px] font-semibold text-white transition-all duration-200 hover:bg-primary/90"
-              >
-                Register Free
-              </Link>
+              {authLoading ? null : user ? (
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMobileOpen(false)}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-center text-[14px] font-semibold text-white transition-all duration-200 hover:bg-primary/90"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  My Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-lg border border-border px-5 py-3 text-center text-[14px] font-medium text-foreground transition-colors hover:bg-surface dark:border-border dark:text-foreground dark:hover:bg-surface"
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    href="/signup"
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-lg bg-primary px-5 py-3 text-center text-[14px] font-semibold text-white transition-all duration-200 hover:bg-primary/90"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

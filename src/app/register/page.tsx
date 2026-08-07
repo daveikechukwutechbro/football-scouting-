@@ -264,25 +264,22 @@ export default function RegisterPage() {
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
     try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
       const token = await user!.getIdToken();
-      const res = await fetch("/api/register", {
+      const res = await fetch("/api/payment/initialize", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(formData),
       });
       const result = await res.json();
-      if (!res.ok) {
+      if (!res.ok || !result.checkout_url) {
         setErrors({
-          general: result.error || "Submission failed. Please try again.",
+          general: result.error || "Could not start payment. Please try again.",
         });
         setIsSubmitting(false);
         return;
       }
-      setIsSubmitted(true);
-      localStorage.removeItem(STORAGE_KEY);
-      setTimeout(() => {
-        window.location.href = "/confirmation";
-      }, 1500);
+      window.location.href = result.checkout_url;
     } catch {
       setErrors({
         general: "Network error. Please check your connection and try again.",
@@ -403,7 +400,7 @@ export default function RegisterPage() {
                   loading={isSubmitting}
                   size="lg"
                 >
-                  Submit Application
+                  Pay $5 &amp; Submit
                 </Button>
               ) : (
                 <Button variant="primary" onClick={goToNextStep} size="lg">
@@ -434,7 +431,7 @@ export default function RegisterPage() {
                 loading={isSubmitting}
                 size="md"
               >
-                Submit
+                Pay $5 &amp; Submit
               </Button>
             ) : (
               <Button variant="primary" onClick={goToNextStep} size="md">

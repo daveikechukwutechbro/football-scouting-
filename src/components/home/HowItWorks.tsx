@@ -1,7 +1,7 @@
 import { UserPlus, ClipboardCheck, Video, Send, Eye, PhoneCall } from "lucide-react";
 
 const STEPS = [
-  { num: "01", icon: UserPlus, title: "Create Account", desc: "Sign up in under a minute. Free, no commitments." },
+  { num: "01", icon: UserPlus, title: "Create Account", desc: "Sign up in under a minute. No commitments." },
   { num: "02", icon: ClipboardCheck, title: "Build Profile", desc: "Add your stats, physical attributes, and playing style." },
   { num: "03", icon: Video, title: "Upload Highlights", desc: "Share match footage that showcases your best moments." },
   { num: "04", icon: Send, title: "Submit Application", desc: "Review and submit your profile to our scout network." },
