@@ -51,6 +51,8 @@ export default function Step5Physical({
         options={BODY_TYPES}
         value={data.bodyType || ""}
         onChange={(e) => updateData({ bodyType: e.target.value })}
+        error={errors.bodyType}
+        required
       />
       <Select
         label="Fitness Level"
@@ -58,6 +60,8 @@ export default function Step5Physical({
         options={FITNESS_LEVELS}
         value={data.fitnessLevel || ""}
         onChange={(e) => updateData({ fitnessLevel: e.target.value })}
+        error={errors.fitnessLevel}
+        required
       />
       <Input
         label="Injuries (Optional)"

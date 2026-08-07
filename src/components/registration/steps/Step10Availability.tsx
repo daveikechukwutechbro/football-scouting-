@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChangeEvent } from "react";
-import { MapPin, Calendar } from "lucide-react";
+import { MapPin, Phone } from "lucide-react";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Card from "@/components/ui/Card";
@@ -78,6 +78,19 @@ export default function Step10Availability({
     (field: string) => (e: ChangeEvent<HTMLInputElement>) =>
       updateData({ [field]: e.target.value });
 
+  const contactLabels: Record<string, string> = {
+    email: "Email Address",
+    phone: "Phone Number",
+    whatsapp: "WhatsApp Number",
+    any: "Email / Phone / WhatsApp",
+  };
+  const contactPlaceholders: Record<string, string> = {
+    email: "you@example.com",
+    phone: "+234 800 000 0000",
+    whatsapp: "+234 800 000 0000",
+    any: "Your preferred contact details",
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -142,6 +155,8 @@ export default function Step10Availability({
             value={data.preferredCountry || ""}
             onChange={handleSelect("preferredCountry")}
             placeholder="Select a country"
+            error={errors.preferredCountry}
+            required
             id="preferred-country"
           />
           <Input
@@ -151,19 +166,12 @@ export default function Step10Availability({
             value={data.preferredLeague || ""}
             onChange={handleInput("preferredLeague")}
             icon={MapPin}
+            error={errors.preferredLeague}
+            required
             id="preferred-league"
           />
         </div>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Input
-            label="Preferred Trial Dates"
-            type="date"
-            value={data.preferredTrialDates || ""}
-            onChange={handleInput("preferredTrialDates")}
-            icon={Calendar}
-            helperText="When are you available for trials?"
-            id="trial-dates"
-          />
           <Select
             label="Preferred Communication Method"
             options={COMMUNICATION_METHODS}
@@ -173,6 +181,18 @@ export default function Step10Availability({
             error={errors.preferredCommunication}
             required
             id="communication-method"
+          />
+          <Input
+            label={contactLabels[data.preferredCommunication || ""] || "Preferred Contact Details"}
+            type="text"
+            placeholder={contactPlaceholders[data.preferredCommunication || ""] || "Enter your contact details"}
+            value={data.communicationContact || ""}
+            onChange={handleInput("communicationContact")}
+            icon={Phone}
+            error={errors.communicationContact}
+            required
+            helperText="Trial dates and scout updates will be sent to this contact."
+            id="communication-contact"
           />
         </div>
       </Card>

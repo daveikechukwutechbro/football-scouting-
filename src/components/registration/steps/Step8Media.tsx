@@ -27,12 +27,15 @@ export default function Step8Media({ data, updateData, errors }: StepProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground dark:text-foreground">
-          Media &amp; Highlights
+          Media &amp; Highlights <span className="text-red-500">*</span>
         </h2>
         <p className="mt-1 text-sm text-muted">
           Upload links to your highlight reels, match footage, or training
-          videos.
+          videos. At least one video is required.
         </p>
+        {errors.videos && (
+          <p className="mt-2 text-xs text-red-500 dark:text-red-400">{errors.videos}</p>
+        )}
       </div>
 
       <div className="rounded-xl border border-dashed border-border bg-surface-alt p-6 dark:border-border dark:bg-surface-alt">

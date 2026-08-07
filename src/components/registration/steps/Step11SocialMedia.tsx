@@ -6,7 +6,6 @@ import {
   Facebook,
   Youtube,
   Twitter,
-  Linkedin,
   Link,
 } from "lucide-react";
 import Input from "@/components/ui/Input";
@@ -18,6 +17,7 @@ interface SocialField {
   label: string;
   placeholder: string;
   icon: typeof Instagram;
+  required?: boolean;
 }
 
 const SOCIAL_FIELDS: SocialField[] = [
@@ -26,6 +26,7 @@ const SOCIAL_FIELDS: SocialField[] = [
     label: "Instagram",
     placeholder: "@username",
     icon: Instagram,
+    required: true,
   },
   {
     key: "facebook",
@@ -51,17 +52,12 @@ const SOCIAL_FIELDS: SocialField[] = [
     placeholder: "@username",
     icon: Twitter,
   },
-  {
-    key: "linkedin",
-    label: "LinkedIn",
-    placeholder: "Profile URL",
-    icon: Linkedin,
-  },
 ];
 
 export default function Step11SocialMedia({
   data,
   updateData,
+  errors,
 }: StepProps) {
   const socialLinks = (data.socialLinks || {}) as Record<string, string>;
 
@@ -78,14 +74,14 @@ export default function Step11SocialMedia({
 
       <div className="flex items-start gap-3 rounded-xl border border-primary-light bg-primary-light/50 px-4 py-3">
         <p className="text-sm text-foreground dark:text-foreground">
-          Social media profiles are optional but help scouts see your
-          personality and brand.
+          Instagram is required. Other profiles are optional but help
+          scouts see your personality and brand.
         </p>
       </div>
 
       <Card className="flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {SOCIAL_FIELDS.map(({ key, label, placeholder, icon }) => (
+          {SOCIAL_FIELDS.map(({ key, label, placeholder, icon, required }) => (
             <Input
               key={key}
               label={label}
@@ -101,6 +97,8 @@ export default function Step11SocialMedia({
                 })
               }
               icon={icon}
+              error={errors[`social-${key}`]}
+              required={required}
               id={`social-${key}`}
             />
           ))}

@@ -73,6 +73,8 @@ export default function Step6Statistics({
           placeholder="e.g. 5"
           value={data.yellowCards || ""}
           onChange={(e) => updateData({ yellowCards: e.target.value })}
+          error={errors.yellowCards}
+          required
         />
         <Input
           label="Red Cards"
@@ -80,6 +82,8 @@ export default function Step6Statistics({
           placeholder="e.g. 0"
           value={data.redCards || ""}
           onChange={(e) => updateData({ redCards: e.target.value })}
+          error={errors.redCards}
+          required
         />
       </div>
 

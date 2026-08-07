@@ -44,7 +44,7 @@ interface PlayerDetail {
   availability: {
     availableForTrials: boolean; availableImmediately: boolean; canTravel: boolean;
     canRelocate: boolean; preferredCountry: string | null; preferredLeague: string | null;
-    preferredTrialDates: string | null; preferredCommunication: string;
+    preferredTrialDates: string | null; preferredCommunication: string; communicationContact: string;
   } | null;
   socialLinks: {
     instagram: string | null; facebook: string | null; tiktok: string | null;
@@ -363,8 +363,8 @@ export default function AdminPlayerDetailPage({ params }: { params: Promise<{ id
           <DetailRow label="Can Relocate" value={player.availability.canRelocate ? "Yes" : "No"} />
           <DetailRow label="Preferred Country" value={player.availability.preferredCountry} />
           <DetailRow label="Preferred League" value={player.availability.preferredLeague} />
-          <DetailRow label="Preferred Trial Dates" value={player.availability.preferredTrialDates} />
           <DetailRow label="Preferred Communication" value={player.availability.preferredCommunication} />
+          <DetailRow label="Contact Details" value={player.availability.communicationContact} />
         </Section>
       )}
 

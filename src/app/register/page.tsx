@@ -70,8 +70,8 @@ const defaultFormData = {
   canRelocate: null as boolean | null,
   preferredCountry: "",
   preferredLeague: "",
-  preferredTrialDates: "",
   preferredCommunication: "",
+  communicationContact: "",
   socialLinks: {} as Record<string, string>,
 };
 
@@ -137,10 +137,16 @@ function validateStep(
         errors.currentLevel = "Current level is required";
       if (!data.contractStatus)
         errors.contractStatus = "Contract status is required";
+      if (!data.currentClub.trim())
+        errors.currentClub = "Current/last club is required";
+      if (!data.yearsExperience)
+        errors.yearsExperience = "Years of experience is required";
       break;
     case 5:
       if (!data.height) errors.height = "Height is required";
       if (!data.weight) errors.weight = "Weight is required";
+      if (!data.bodyType) errors.bodyType = "Body type is required";
+      if (!data.fitnessLevel) errors.fitnessLevel = "Fitness level is required";
       break;
     case 6:
       if (!data.totalAppearances && data.totalAppearances !== "0")
@@ -149,12 +155,34 @@ function validateStep(
         errors.totalGoals = "Goals is required";
       if (!data.totalAssists && data.totalAssists !== "0")
         errors.totalAssists = "Assists is required";
+      if (!data.yellowCards && data.yellowCards !== "0")
+        errors.yellowCards = "Yellow cards is required";
+      if (!data.redCards && data.redCards !== "0")
+        errors.redCards = "Red cards is required";
       break;
     case 7:
+      if (!data.biography.trim()) errors.biography = "Biography is required";
       if (!data.playingStyle.trim())
         errors.playingStyle = "Playing style description is required";
       if (!data.strengths.trim())
         errors.strengths = "Please list your key strengths";
+      if (!data.careerGoal.trim())
+        errors.careerGoal = "Career goal is required";
+      if (!data.motivation.trim())
+        errors.motivation = "Motivation is required";
+      break;
+    case 8:
+      if (!data.videos || data.videos.length === 0)
+        errors.videos = "Please add at least one highlight video";
+      break;
+    case 9:
+      const docs = data.documents || {};
+      if (!(docs.nationalId instanceof File))
+        errors.nationalId = "National ID is required";
+      if (!(docs.passport instanceof File))
+        errors.passport = "Passport is required";
+      if (!(docs.birthCertificate instanceof File))
+        errors.birthCertificate = "Birth certificate is required";
       break;
     case 10:
       if (data.availableForTrials === null)
@@ -165,9 +193,20 @@ function validateStep(
         errors.canTravel = "Please select an option";
       if (data.canRelocate === null)
         errors.canRelocate = "Please select an option";
+      if (!data.preferredCountry)
+        errors.preferredCountry = "Preferred country is required";
+      if (!data.preferredLeague.trim())
+        errors.preferredLeague = "Preferred league is required";
       if (!data.preferredCommunication)
         errors.preferredCommunication =
           "Preferred communication method is required";
+      if (!data.communicationContact.trim())
+        errors.communicationContact = "Contact details are required";
+      break;
+    case 11:
+      const links = data.socialLinks || {};
+      if (!(links.instagram || "").trim())
+        errors["social-instagram"] = "Instagram is required";
       break;
   }
   return errors;

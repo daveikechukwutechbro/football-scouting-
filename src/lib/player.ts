@@ -65,19 +65,20 @@ export function parsePlayerPayload(body: any) {
         }
       : null;
 
-  const availability =
-    body.availableForTrials !== null || body.preferredCommunication
-      ? {
-          availableForTrials: body.availableForTrials ?? false,
-          availableImmediately: body.availableImmediately ?? false,
-          canTravel: body.canTravel ?? false,
-          canRelocate: body.canRelocate ?? false,
-          preferredCountry: body.preferredCountry || null,
-          preferredLeague: body.preferredLeague || null,
-          preferredTrialDates: body.preferredTrialDates || null,
-          preferredCommunication: body.preferredCommunication || "",
-        }
-      : null;
+    const availability =
+      body.availableForTrials !== null || body.preferredCommunication
+        ? {
+            availableForTrials: body.availableForTrials ?? false,
+            availableImmediately: body.availableImmediately ?? false,
+            canTravel: body.canTravel ?? false,
+            canRelocate: body.canRelocate ?? false,
+            preferredCountry: body.preferredCountry || null,
+            preferredLeague: body.preferredLeague || null,
+            preferredTrialDates: null,
+            preferredCommunication: body.preferredCommunication || "",
+            communicationContact: body.communicationContact || "",
+          }
+        : null;
 
   const socialLinks = body.socialLinks || null;
   const documents = body.documents || [];

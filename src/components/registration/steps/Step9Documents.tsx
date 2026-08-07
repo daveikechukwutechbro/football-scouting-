@@ -22,6 +22,7 @@ interface DocumentField {
   label: string;
   icon: typeof FileText;
   helperText?: string;
+  optional?: boolean;
 }
 
 const DOCUMENT_FIELDS: DocumentField[] = [
@@ -32,22 +33,25 @@ const DOCUMENT_FIELDS: DocumentField[] = [
     key: "schoolId",
     label: "School ID",
     icon: GraduationCap,
+    optional: true,
   },
   {
     key: "medicalCertificate",
     label: "Medical Certificate",
     icon: Heart,
+    optional: true,
   },
   {
     key: "clubClearance",
     label: "Club Clearance Letter",
     icon: FolderOpen,
+    optional: true,
   },
   {
     key: "parentConsent",
     label: "Parent Consent Document",
     icon: UserCheck,
-    helperText: "Required if under 18",
+    optional: true,
   },
 ];
 
@@ -97,13 +101,14 @@ export default function Step9Documents({
       <div className="flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 dark:border-amber-700 dark:bg-amber-950/30">
         <Info className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
         <p className="text-sm text-foreground dark:text-foreground">
-          All documents are optional but may be required before trial
-          invitations. Accepted: PDF, JPG, PNG (max 5MB each).
+          National ID, Passport, and Birth Certificate are required. Medical
+          certificate, club clearance, school ID, and parent consent are
+          optional. Accepted: PDF, JPG, PNG (max 5MB each).
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {DOCUMENT_FIELDS.map(({ key, label, icon: Icon, helperText }) => {
+        {DOCUMENT_FIELDS.map(({ key, label, icon: Icon, helperText, optional }) => {
           const file = documents[key];
           return (
             <Card key={key} className="flex flex-col gap-3">
@@ -112,6 +117,13 @@ export default function Step9Documents({
                 <span className="text-sm font-semibold text-foreground dark:text-foreground">
                   {label}
                 </span>
+                {optional ? (
+                  <span className="ml-auto rounded-full bg-muted/30 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted">
+                    Optional
+                  </span>
+                ) : (
+                  <span className="ml-auto text-red-500">*</span>
+                )}
               </div>
               <FileUpload
                 accept={ACCEPT_TYPES}

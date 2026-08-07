@@ -81,6 +81,7 @@ export default function Step4FootballProfile({
         value={data.currentClub || ""}
         onChange={(e) => updateData({ currentClub: e.target.value })}
         error={errors.currentClub}
+        required
       />
       <Input
         label="Years of Playing Experience"
@@ -92,6 +93,7 @@ export default function Step4FootballProfile({
           updateData({ yearsExperience: e.target.value })
         }
         error={errors.yearsExperience}
+        required
       />
       <Input
         label="Previous Clubs (Optional)"

@@ -60,12 +60,10 @@ export default function Step7PlayingStyle({
             id="strengths"
           />
           <TextArea
-            label="Weaknesses"
+            label="Weaknesses (Optional)"
             placeholder="e.g. Aerial duels, weak foot, stamina..."
             value={data.weaknesses || ""}
             onChange={handleText("weaknesses")}
-            error={errors.weaknesses}
-            required
             rows={3}
             helperText="Be honest — scouts appreciate self-awareness"
             id="weaknesses"

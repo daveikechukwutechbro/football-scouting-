@@ -267,8 +267,8 @@ export default function DashboardPage() {
               <DetailRow label="Can Relocate" value={p.availability.canRelocate ? "Yes" : "No"} />
               <DetailRow label="Preferred Country" value={p.availability.preferredCountry} />
               <DetailRow label="Preferred League" value={p.availability.preferredLeague} />
-              <DetailRow label="Preferred Trial Dates" value={p.availability.preferredTrialDates} />
               <DetailRow label="Preferred Communication" value={p.availability.preferredCommunication} />
+              <DetailRow label="Contact Details" value={p.availability.communicationContact} />
             </Section>
           )}
 
